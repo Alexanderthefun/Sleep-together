@@ -10,7 +10,7 @@ export const SleeperNav = () => {
                 <Link className="navbar__link" to="/tickets">Matches</Link>
             </li>
             <li className="navbar__item active">
-                <Link className="navbar__link" to="/profile">Profile</Link>
+                <Link className="navbar__link" to="/profile">Edit Profile</Link>
             </li>
             {
                 localStorage.getItem("sleeper_user")

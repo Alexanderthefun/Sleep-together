@@ -7,7 +7,7 @@ export const SleeperViews = () => {
         <Routes>
             <Route path="/" element={
                 <>
-                    <h1>Sleep Together</h1>
+                    <h1>Welcome Sleeper</h1>
                     <div>If you want to know how someone is doing, ask them how they're sleeping.</div>
 
                     <Outlet />

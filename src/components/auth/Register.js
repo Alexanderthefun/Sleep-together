@@ -80,18 +80,71 @@ export const Register = (props) => {
                         placeholder="Email address" required />
                 </fieldset>
                 <fieldset>
-                    <label htmlFor="gender"> Gender </label>
-                    <select name="gender" id="gender">
-                        <option value={0}>Select Gender</option>
-                        {
-                            genders.map(
-                                (gender) => {
-                                    return <option value={gender.id}>{gender.type}</option>
-                                }
-                            )
-                        }
+                <div className="form-group">
+                    <select className="dropDowns">
+                        <option value="0">Select Gender</option>
+                        {genders.map(
+                            (gender) => {
+                                return <option
+                                    value={gender.id}
+                                    onChange={
+                                        (evt) => {
+                                            const copy = { ...profile }
+                                            copy.gender = evt.target.value
+                                            updateProfile(copy)
+                                        }
+                                    }>
+                                    {gender.type}</option>
+                            }
+                        )}
                     </select>
-                </fieldset>
+                    <input
+                        required autoFocus
+                        type="text"
+                        className="form-control"
+                        value={profile.email}
+                        onChange={
+                            (evt) => {
+                                const copy = { ...profile }
+                                copy.email = evt.target.value
+                                updateProfile(copy)
+                            }
+                        } />
+                </div>
+            </fieldset>
+            <fieldset>
+                <div className="form-group">
+                    <select className="dropDowns">
+                        <option value="0">Gender Match Preference</option>
+                        {genderMatchPreferences.map(
+                            (gender) => {
+                                return <option
+                                    value={gender.id}
+                                    onChange={
+                                        (evt) => {
+                                            const copy = { ...profile }
+                                            copy.genderMatchPreference = evt.target.value
+                                            updateProfile(copy)
+                                        }
+                                    }>
+                                    {gender.type}</option>
+                            }
+                        )}
+                    </select>
+                    <input
+                        required autoFocus
+                        type="text"
+                        className="form-control"
+                        value={profile.email}
+                        onChange={
+                            (evt) => {
+                                const copy = { ...profile }
+                                copy.email = evt.target.value
+                                updateProfile(copy)
+                            }
+                        } />
+                </div>
+            </fieldset>
                 <fieldset>
                     <input onChange={(evt) => {
                         const copy = { ...sleeperUser }
