@@ -3,47 +3,109 @@ import { useNavigate } from "react-router-dom"
 import "./Login.css"
 
 export const Register = (props) => {
-    const [sleeperUser, setSleeperUser] = useState({
-        email: "",
-        fullName: "",
-        isStaff: false
+    const [profile, updateProfile] = useState({
+        fullName: '',
+        email: '',
+        gender: '',
+        genderMatchPreference: '',
+        sleepPosition: '',
+        sleepDepth: '',
+        mattressType: '',
+        bedTime: '',
+        temperature: '',
+        wakingTime: '',
+        sleepNoise: ''
     })
     const [genders, setGenders] = useState([])
+    const [genderMatchPreferences, setGenderMatchPreferences] = useState([])
+    const [sleepPositions, setSleepPositions] = useState([])
+    const [sleepDepths, setSleepDepths] = useState([])
+    const [mattressTypes, setMattressTypes] = useState([])
+    const [bedTimes, setBedTimes] = useState([])
+    const [temperatures, setTemperatures] = useState([])
+    const [wakingTimes, setWakingTimes] = useState([])
+    const [sleepNoises, setSleepNoises] = useState([])
+    const [error, setError] = useState([])
+
+    useEffect(() => {
+        Promise.all([fetch('http://localhost:8088/genders'), fetch('http://localhost:8088/genderMatchPreferences'),
+        fetch('http://localhost:8088/sleepPositions'), fetch('http://localhost:8088/sleepDepths'),
+        fetch('http://localhost:8088/mattressTypes'), fetch('http://localhost:8088/bedTimes'),
+        fetch('http://localhost:8088/temperatures'), fetch('http://localhost:8088/wakingTimes'),
+        fetch('http://localhost:8088/sleepNoises')
+        ])
+            .then(([res1, res2, res3, res4, res5, res6, res7, res8, res9]) => Promise.all([res1.json(), res2.json(), res3.json(), res4.json(), res5.json(), res6.json(), res7.json(), res8.json(), res9.json()]))
+            .then(([data1, data2, data3, data4, data5, data6, data7, data8, data9]) => {
+                setGenders(data1)
+                setGenderMatchPreferences(data2)
+                setSleepPositions(data3)
+                setSleepDepths(data4)
+                setMattressTypes(data5)
+                setBedTimes(data6)
+                setTemperatures(data7)
+                setWakingTimes(data8)
+                setSleepNoises(data9)
+            })
+            .catch(error => {
+                setError(error)
+            })
+    }, [])
+
+    // if (error) {
+    //     return <div>Error</div>
+    // }
+
+    const localSleeperUser = localStorage.getItem("sleeper_user")
+    const sleeperUserObject = JSON.parse(localSleeperUser)
+
+
+    const [feedback, setFeedback] = useState("")
+
+    useEffect(() => {
+        if (feedback !== "") {
+            setTimeout(() => setFeedback(""), 3000);
+        }
+    }, [feedback])
+
+
     let navigate = useNavigate()
 
     const registerNewUser = () => {
-        return fetch("http://localhost:8088/users", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(sleeperUser)
-        })
-            .then(res => res.json())
-            .then(createdUser => {
-                if (createdUser.hasOwnProperty("id")) {
-                    localStorage.setItem("sleeper_user", JSON.stringify({
-                        id: createdUser.id,
-                        staff: createdUser.isStaff
-                    }))
-
-                    navigate("/")
-                }
+        if (
+            profile.fullName && profile.email &&
+            profile.gender && profile.genderMatchPreference &&
+            profile.sleepPosition && profile.sleepDepth &&
+            profile.mattressType && profile.temperature &&
+            profile.bedTime && profile.wakingTime &&
+            profile.sleepNoise
+        ) {
+            return fetch("http://localhost:8088/users", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(profile)
             })
-    }
-    useEffect(
-        () => {
-            fetch('http://localhost:8088/genders')
                 .then(res => res.json())
-                .then((genderArray) => {
-                    setGenders(genderArray)
+                .then(createdUser => {
+                    if (createdUser.hasOwnProperty("id")) {
+                        localStorage.setItem("sleeper_user", JSON.stringify({
+                            id: createdUser.id,
+                            staff: createdUser.isStaff
+                        }))
+
+                        navigate("/")
+                    }
                 })
-        }, []
-    )
+        }
+        else {
+            window.alert("You must fill out the entire form in order to register.")
+        }
+    }
 
     const handleRegister = (e) => {
         e.preventDefault()
-        return fetch(`http://localhost:8088/users?email=${sleeperUser.email}`)
+        return fetch(`http://localhost:8088/users?email=${profile.email}`)
             .then(res => res.json())
             .then(response => {
                 if (response.length > 0) {
@@ -57,111 +119,241 @@ export const Register = (props) => {
             })
     }
 
-    const updateSleeperUser = (evt) => {
-        const copy = { ...sleeperUser }
-        copy[evt.target.id] = evt.target.value
-        setSleeperUser(copy)
-    }
-
     return (
         <main style={{ textAlign: "center" }}>
             <form className="form--login" onSubmit={handleRegister}>
                 <h1 className="h3 mb-3 font-weight-normal">Please Register for Sleep Together</h1>
                 <fieldset>
                     <label htmlFor="fullName"> Full Name </label>
-                    <input onChange={updateSleeperUser}
+                    <input onChange={
+                                (event) => {
+                                    const copy = { ...profile }
+                                    copy.fullName = event.target.value
+                                    updateProfile(copy)
+                                }
+                            }
                         type="text" id="fullName" className="form-control"
                         placeholder="Enter your name" required autoFocus />
                 </fieldset>
                 <fieldset>
                     <label htmlFor="email"> Email address </label>
-                    <input onChange={updateSleeperUser}
+                    <input onChange={
+                                (event) => {
+                                    const copy = { ...profile }
+                                    copy.email = event.target.value
+                                    updateProfile(copy)
+                                }
+                            }
                         type="email" id="email" className="form-control"
                         placeholder="Email address" required />
                 </fieldset>
                 <fieldset>
-                <div className="form-group">
-                    <select className="dropDowns">
-                        <option value="0">Select Gender</option>
-                        {genders.map(
-                            (gender) => {
-                                return <option
-                                    value={gender.id}
-                                    onChange={
-                                        (evt) => {
-                                            const copy = { ...profile }
-                                            copy.gender = evt.target.value
-                                            updateProfile(copy)
-                                        }
-                                    }>
-                                    {gender.type}</option>
-                            }
-                        )}
-                    </select>
-                    <input
-                        required autoFocus
-                        type="text"
-                        className="form-control"
-                        value={profile.email}
-                        onChange={
-                            (evt) => {
-                                const copy = { ...profile }
-                                copy.email = evt.target.value
-                                updateProfile(copy)
-                            }
-                        } />
-                </div>
-            </fieldset>
-            <fieldset>
-                <div className="form-group">
-                    <select className="dropDowns">
-                        <option value="0">Gender Match Preference</option>
-                        {genderMatchPreferences.map(
-                            (gender) => {
-                                return <option
-                                    value={gender.id}
-                                    onChange={
-                                        (evt) => {
-                                            const copy = { ...profile }
-                                            copy.genderMatchPreference = evt.target.value
-                                            updateProfile(copy)
-                                        }
-                                    }>
-                                    {gender.type}</option>
-                            }
-                        )}
-                    </select>
-                    <input
-                        required autoFocus
-                        type="text"
-                        className="form-control"
-                        value={profile.email}
-                        onChange={
-                            (evt) => {
-                                const copy = { ...profile }
-                                copy.email = evt.target.value
-                                updateProfile(copy)
-                            }
-                        } />
-                </div>
-            </fieldset>
-                <fieldset>
-                    <input onChange={(evt) => {
-                        const copy = { ...sleeperUser }
-                        copy.isStaff = evt.target.checked
-                        setSleeperUser(copy)
-                    }}
-                        type="checkbox" id="isStaff" />
-                    <label htmlFor="email"> I am an employee </label>
+                    <div className="form-group">
+                        <select className="dropDowns"
+                            onChange={
+                                (event) => {
+                                    const copy = { ...profile }
+                                    copy.gender = parseInt(event.target.value)
+                                    updateProfile(copy)
+                                }
+                            }>
+                            <option value="0">Select Gender</option>
+                            {genders.map(
+                                (gender) => {
+                                    return <option
+                                        key={gender.id}
+                                        value={gender.id}>
+                                        {gender.type}</option>
+                                }
+                            )}
+                        </select>
+
+                    </div>
                 </fieldset>
                 <fieldset>
-                    <button type="submit"> Register </button>
+                    <div className="form-group">
+                        <select className="dropDowns"
+                            onChange={
+                                (event) => {
+                                    const copy = { ...profile }
+                                    copy.genderMatchPreference = parseInt(event.target.value)
+                                    updateProfile(copy)
+                                }
+                            }>
+                            <option value="0">Gender Match Preference</option>
+                            {genderMatchPreferences.map(
+                                (gender) => {
+                                    return <option
+                                        key={gender.id}
+                                        value={gender.id}>
+                                        {gender.type}</option>
+                                }
+                            )}
+                        </select>
+                    </div>
                 </fieldset>
+                <fieldset>
+                    <div className="form-group">
+                        <select className="dropDowns"
+                            onChange={
+                                (event) => {
+                                    const copy = { ...profile }
+                                    copy.sleepPosition = parseInt(event.target.value)
+                                    updateProfile(copy)
+                                }
+                            }>
+                            <option value="0">Sleep Position</option>
+                            {sleepPositions.map(
+                                (position) => {
+                                    return <option
+                                        id={position.id}
+                                        value={position.id}>
+                                        {position.type}</option>
+                                }
+                            )}
+                        </select>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <div className="form-group">
+                        <select className="dropDowns"
+                                onChange={
+                                    (event) => {
+                                        const copy = { ...profile }
+                                        copy.sleepDepth = parseInt(event.target.value)
+                                        updateProfile(copy)
+                                    }
+                                }>
+                            <option value="0">Sleep Depth</option>
+                            {sleepDepths.map(
+                                (depth) => {
+                                    return <option
+                                        key={depth.id}
+                                        value={depth.id}>
+                                        {depth.type}</option>
+                                }
+                            )}
+                        </select>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <div className="form-group">
+                        <select className="dropDowns"
+                                onChange={
+                                    (event) => {
+                                        const copy = { ...profile }
+                                        copy.mattressType = parseInt(event.target.value)
+                                        updateProfile(copy)
+                                    }
+                                }>
+                            <option value="0">Mattress Type</option>
+                            {mattressTypes.map(
+                                (type) => {
+                                    return <option
+                                        key={type.id}
+                                        value={type.id}>
+                                        {type.type}</option>
+                                }
+                            )}
+                        </select>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <div className="form-group">
+                        <select className="dropDowns"
+                                onChange={
+                                    (event) => {
+                                        const copy = { ...profile }
+                                        copy.bedTime = parseInt(event.target.value)
+                                        updateProfile(copy)
+                                    }
+                                }>
+                            <option value="0">Bedtime</option>
+                            {bedTimes.map(
+                                (bedtime) => {
+                                    return <option
+                                        key={bedtime.id}
+                                        value={bedtime.id}>
+                                        {bedtime.timeFrame}</option>
+                                }
+                            )}
+                        </select>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <div className="form-group">
+                        <select className="dropDowns"
+                                onChange={
+                                    (event) => {
+                                        const copy = { ...profile }
+                                        copy.wakingTime = parseInt(event.target.value)
+                                        updateProfile(copy)
+                                    }
+                                }>
+                            <option value="0">Waking Time</option>
+                            {wakingTimes.map(
+                                (wakingTime) => {
+                                    return <option
+                                        key={wakingTime.id}
+                                        value={wakingTime.id}>
+                                        {wakingTime.range}</option>
+                                }
+                            )}
+                        </select>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <div className="form-group">
+                        <select className="dropDowns"
+                                onChange={
+                                    (event) => {
+                                        const copy = { ...profile }
+                                        copy.temperature = parseInt(event.target.value)
+                                        updateProfile(copy)
+                                    }
+                                }>
+                            <option value="0">Temperature</option>
+                            {temperatures.map(
+                                (temp) => {
+                                    return <option
+                                        key={temp.id}
+                                        value={temp.id}>
+                                        {temp.range}</option>
+                                }
+                            )}
+                        </select>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <div className="form-group">
+                        <select className="dropDowns"
+                                onChange={
+                                    (event) => {
+                                        const copy = { ...profile }
+                                        copy.sleepNoise = parseInt(event.target.value)
+                                        updateProfile(copy)
+                                    }
+                                }>
+                            <option value="0">Sleep Noise</option>
+                            {sleepNoises.map(
+                                (noise) => {
+                                    return <option
+                                        key={noise.id}
+                                        value={noise.id}>
+                                        {noise.type}</option>
+                                }
+                            )}
+                        </select>
+                    </div>
+                </fieldset>
+
+                <button
+                    onClick={(clickEvent) => handleRegister(clickEvent)}
+                    type="submit" className="button"> Register </button>
+
             </form>
         </main>
     )
 }
 
 
-// how do I expand multiple tables? 
-// is it smarter to use a promiseArray and then destructure it to variables? if so, how?
