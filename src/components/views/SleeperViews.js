@@ -1,4 +1,5 @@
 import { Outlet, Route, Routes } from "react-router-dom"
+import { EditProfile } from "../profile/EditProfile"
 
 
 
@@ -13,7 +14,8 @@ export const SleeperViews = () => {
                     <Outlet />
                 </>
             }>
-
+            
+            <Route path="profile" element={ <EditProfile />} />
                 
             </Route>
         </Routes>

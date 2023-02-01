@@ -1,0 +1,82 @@
+"Sleep Together"
+
+
+//dont forget about admins who can delete users.    
+
+
+// SOFT DELETE- instead of deleting from database, set active false.
+// Set it to true by default. 
+
+//clicking "my matches" will trigger and go through users to 
+
+
+// MVP
+// Create a profile.			
+// Delete their profile.			
+// Edit their profile.			
+// Delete matches from the page.
+// Log in/ log out.
+
+
+// Stretch Goals:
+// Submit optional info displayed      
+//  for matched users.
+// Have access to a page of matched users/their info.
+// Report another user for misconduct.
+// Upload picture to be displayed after match
+// Start a chat on the web app.
+// Location-based matching (probably important in real life)
+// Desperation Button that switches certain properties to “indifferent” to raise matching odds.
+// New employees registration page.
+// Make a simple sleepy song to play on the website. User can mute it if prefered. 
+// Sleep Preference attributes:
+// "temperature": 
+// "wakingTime":
+// "sleepNoise":
+// 
+// consider only making matches if the userId does or does not exist in the matches table.
+
+// .count() on arrays of matching or nonmatching attributes
+// post matches to database.
+
+// may want to put editing on stretch goals.
+// ERD: https://dbdiagram.io/d/63d3f6b6296d97641d7c99a7
+// Wireframe: https://miro.com/app/board/uXjVPtHjYb8=/ 
+
+
+
+// 1. Start by making a database with all the necessary properties on each object. 
+//    start small. You'll need Users, compiled by customers and employees. 
+//    Make one example of each table and then we'll add the rest by testing the register page. 
+//    You'll need types of sleep preferences
+//    A table for Matches. 
+//    Maybe later down the road you can make a table for reports from users.
+
+// 2. Make the component for building a home page for an unregistered guest. 
+//    Should have a navbar with Log in, Register, and  How it works Tabs (we'll insert pics later)
+//    Will also have "Sleep Together" written at the top. 
+
+// 3. Next we'll build navbar component. then we'll make necessary routes. 
+
+// 4. Then we'll make the registration page. It will consist of basic info, a questionaire and extra info.
+//    then a submit button which will use a POST method to post the new user to the database. 
+//    (We'll consider new employees when it's time.)
+
+// 5. Build a component for the Sleepy User page. It displays "Welcome Sleeper" at the top.
+//    It'll have a nav bar that contains a link for "Matching Sleepers", "Edit Account" and "Log out".
+//    As well as user's picture, if one is uploaded. If not, a default pic will appear. 
+
+// 6. Build a component for strictly for the matching. This will be tricky. 
+//    The algorhythm will need to define an order of operations that determines which properties are most 
+//    Important to least important. Many conditional statements will be needed. Good luck future me.
+
+// 7. Build a Matches component. It will display "Matches" at the top and the navbar will have a 
+//    Home, edit account and LogOut links. Should probably also have "delete Match" button. That button will 
+//    Delete a specific match from the Matches table in the database. 
+//    The matches page will display another user's preferences to the current sleeper's preferences.
+
+// 8. Build an Admin component that will allow an employee to view all users. Employee will also be
+//    able to delete users and/or Matches. Navbar should have "All Users" "All Matches" and "LogOut".
+//    Picture of current Admin in the middle. 
+
+// 9. Begin CSS. Chose a color scheme. Consider images.
