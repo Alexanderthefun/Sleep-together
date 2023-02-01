@@ -1,10 +1,25 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import "./Login.css"
 
-export const Register = (props) => {
+//Should this be the same thing as register except use PUT instead of POST?
+//If so, should I put all the attributes on my local-user so I can have it all populated in the input fields? 
+
+// Make a button for delete
+export const EditProfile = () => {
+    const [genders, setGenders] = useState([])
+    const [genderMatchPreferences, setGenderMatchPreferences] = useState([])
+    const [sleepPositions, setSleepPositions] = useState([])
+    const [sleepDepths, setSleepDepths] = useState([])
+    const [mattressTypes, setMattressTypes] = useState([])
+    const [bedTimes, setBedTimes] = useState([])
+    const [temperatures, setTemperatures] = useState([])
+    const [wakingTimes, setWakingTimes] = useState([])
+    const [sleepNoises, setSleepNoises] = useState([])
+    const [user, setUser] = useState([])
+    const [active, setActive] = useState(true)
+    const [error, setError] = useState([])
     const [profile, updateProfile] = useState({
-        fullName: '',
+        fullName: user.fullName,
         email: '',
         gender: '',
         genderMatchPreference: '',
@@ -17,26 +32,15 @@ export const Register = (props) => {
         sleepNoise: '',
         accountActive: true
     })
-    const [genders, setGenders] = useState([])
-    const [genderMatchPreferences, setGenderMatchPreferences] = useState([])
-    const [sleepPositions, setSleepPositions] = useState([])
-    const [sleepDepths, setSleepDepths] = useState([])
-    const [mattressTypes, setMattressTypes] = useState([])
-    const [bedTimes, setBedTimes] = useState([])
-    const [temperatures, setTemperatures] = useState([])
-    const [wakingTimes, setWakingTimes] = useState([])
-    const [sleepNoises, setSleepNoises] = useState([])
-    const [error, setError] = useState([])
-
     useEffect(() => {
         Promise.all([fetch('http://localhost:8088/genders'), fetch('http://localhost:8088/genderMatchPreferences'),
         fetch('http://localhost:8088/sleepPositions'), fetch('http://localhost:8088/sleepDepths'),
         fetch('http://localhost:8088/mattressTypes'), fetch('http://localhost:8088/bedTimes'),
         fetch('http://localhost:8088/temperatures'), fetch('http://localhost:8088/wakingTimes'),
-        fetch('http://localhost:8088/sleepNoises')
+        fetch('http://localhost:8088/sleepNoises'), fetch(`http://localhost:8088/users?id=${sleeperUserObject.id}`)
         ])
-            .then(([res1, res2, res3, res4, res5, res6, res7, res8, res9]) => Promise.all([res1.json(), res2.json(), res3.json(), res4.json(), res5.json(), res6.json(), res7.json(), res8.json(), res9.json()]))
-            .then(([data1, data2, data3, data4, data5, data6, data7, data8, data9]) => {
+            .then(([res1, res2, res3, res4, res5, res6, res7, res8, res9, res10]) => Promise.all([res1.json(), res2.json(), res3.json(), res4.json(), res5.json(), res6.json(), res7.json(), res8.json(), res9.json(), res10.json()]))
+            .then(([data1, data2, data3, data4, data5, data6, data7, data8, data9, data10]) => {
                 setGenders(data1)
                 setGenderMatchPreferences(data2)
                 setSleepPositions(data3)
@@ -46,15 +50,14 @@ export const Register = (props) => {
                 setTemperatures(data7)
                 setWakingTimes(data8)
                 setSleepNoises(data9)
+                setUser(data10[0])
             })
             .catch(error => {
                 setError(error)
             })
     }, [])
 
-    // if (error) {
-    //     return <div>Error</div>
-    // }
+
 
     const localSleeperUser = localStorage.getItem("sleeper_user")
     const sleeperUserObject = JSON.parse(localSleeperUser)
@@ -71,7 +74,7 @@ export const Register = (props) => {
 
     let navigate = useNavigate()
 
-    const registerNewUser = () => {
+    const finishEdit = () => {
         if (
             profile.fullName && profile.email &&
             profile.gender && profile.genderMatchPreference &&
@@ -80,73 +83,64 @@ export const Register = (props) => {
             profile.bedTime && profile.wakingTime &&
             profile.sleepNoise
         ) {
-            return fetch(`http://localhost:8088/users/`, {
-                method: "POST",
+            return fetch(`http://localhost:8088/users/${sleeperUserObject.id}`, {
+                method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(profile)
             })
                 .then(res => res.json())
-                .then(createdUser => {
-                    if (createdUser.hasOwnProperty("id")) {
-                        localStorage.setItem("sleeper_user", JSON.stringify({
-                            id: createdUser.id,
-                            staff: createdUser.isStaff
-                        }))
-
-                        navigate("/")
-                    }
-                })
+                .then(navigate("/"))
         }
         else {
-            window.alert("You must fill out the entire form in order to register.")
+            window.alert("You must fill out the entire form in order to complete edit.")
         }
     }
 
-    const handleRegister = (e) => {
+    const handleEdit = (e) => {
         e.preventDefault()
         return fetch(`http://localhost:8088/users?email=${profile.email}`)
             .then(res => res.json())
-            .then(response => {
-                if (response.length > 0) {
-                    // Duplicate email. No good.
-                    window.alert("Account with that email address already exists")
-                }
-                else {
-                    // Good email, create user.
-                    registerNewUser()
-                }
+            .then(res => {
+                finishEdit(res)
             })
     }
-// Maybe put everything below into a separate component in another module and call it here?
+
+    const deleteAccount = (e) => {
+        return fetch(`http://localhost:8088/users/${sleeperUserObject.id}`, {
+            method: "DELETE",
+        })
+            .then(navigate("/login"))
+    }
+
     return (
         <main style={{ textAlign: "center" }}>
-            <form className="form--login" onSubmit={handleRegister}>
-                <h1 className="h3 mb-3 font-weight-normal">Please Register for Sleep Together</h1>
+            <form className="form--login" onSubmit={handleEdit}>
+                <h2 className="h3 mb-3 font-weight-normal">Complete Entire Form to Edit Profile</h2>
                 <fieldset>
                     <label htmlFor="fullName"> Full Name </label>
                     <input onChange={
-                                (event) => {
-                                    const copy = { ...profile }
-                                    copy.fullName = event.target.value
-                                    updateProfile(copy)
-                                }
-                            }
-                        type="text" id="fullName" className="form-control"
-                        placeholder="Enter your name" required autoFocus />
+                        (event) => {
+                            const copy = { ...profile }
+                            copy.fullName = event.target.value
+                            updateProfile(copy)
+                        }
+                    }
+                        type="text" value={profile.fullName} id="fullName" className="form-control"
+                        placeholder={user.fullName} required autoFocus />
                 </fieldset>
                 <fieldset>
                     <label htmlFor="email"> Email address </label>
                     <input onChange={
-                                (event) => {
-                                    const copy = { ...profile }
-                                    copy.email = event.target.value
-                                    updateProfile(copy)
-                                }
-                            }
+                        (event) => {
+                            const copy = { ...profile }
+                            copy.email = event.target.value
+                            updateProfile(copy)
+                        }
+                    }
                         type="email" id="email" className="form-control"
-                        placeholder="Email address" required />
+                        placeholder={user.email} required />
                 </fieldset>
                 <fieldset>
                     <div className="form-group">
@@ -218,13 +212,13 @@ export const Register = (props) => {
                 <fieldset>
                     <div className="form-group">
                         <select className="dropDowns"
-                                onChange={
-                                    (event) => {
-                                        const copy = { ...profile }
-                                        copy.sleepDepth = parseInt(event.target.value)
-                                        updateProfile(copy)
-                                    }
-                                }>
+                            onChange={
+                                (event) => {
+                                    const copy = { ...profile }
+                                    copy.sleepDepth = parseInt(event.target.value)
+                                    updateProfile(copy)
+                                }
+                            }>
                             <option value="0">Sleep Depth</option>
                             {sleepDepths.map(
                                 (depth) => {
@@ -240,13 +234,13 @@ export const Register = (props) => {
                 <fieldset>
                     <div className="form-group">
                         <select className="dropDowns"
-                                onChange={
-                                    (event) => {
-                                        const copy = { ...profile }
-                                        copy.mattressType = parseInt(event.target.value)
-                                        updateProfile(copy)
-                                    }
-                                }>
+                            onChange={
+                                (event) => {
+                                    const copy = { ...profile }
+                                    copy.mattressType = parseInt(event.target.value)
+                                    updateProfile(copy)
+                                }
+                            }>
                             <option value="0">Mattress Type</option>
                             {mattressTypes.map(
                                 (type) => {
@@ -262,13 +256,13 @@ export const Register = (props) => {
                 <fieldset>
                     <div className="form-group">
                         <select className="dropDowns"
-                                onChange={
-                                    (event) => {
-                                        const copy = { ...profile }
-                                        copy.bedTime = parseInt(event.target.value)
-                                        updateProfile(copy)
-                                    }
-                                }>
+                            onChange={
+                                (event) => {
+                                    const copy = { ...profile }
+                                    copy.bedTime = parseInt(event.target.value)
+                                    updateProfile(copy)
+                                }
+                            }>
                             <option value="0">Bedtime</option>
                             {bedTimes.map(
                                 (bedtime) => {
@@ -284,13 +278,13 @@ export const Register = (props) => {
                 <fieldset>
                     <div className="form-group">
                         <select className="dropDowns"
-                                onChange={
-                                    (event) => {
-                                        const copy = { ...profile }
-                                        copy.wakingTime = parseInt(event.target.value)
-                                        updateProfile(copy)
-                                    }
-                                }>
+                            onChange={
+                                (event) => {
+                                    const copy = { ...profile }
+                                    copy.wakingTime = parseInt(event.target.value)
+                                    updateProfile(copy)
+                                }
+                            }>
                             <option value="0">Waking Time</option>
                             {wakingTimes.map(
                                 (wakingTime) => {
@@ -306,13 +300,13 @@ export const Register = (props) => {
                 <fieldset>
                     <div className="form-group">
                         <select className="dropDowns"
-                                onChange={
-                                    (event) => {
-                                        const copy = { ...profile }
-                                        copy.temperature = parseInt(event.target.value)
-                                        updateProfile(copy)
-                                    }
-                                }>
+                            onChange={
+                                (event) => {
+                                    const copy = { ...profile }
+                                    copy.temperature = parseInt(event.target.value)
+                                    updateProfile(copy)
+                                }
+                            }>
                             <option value="0">Temperature</option>
                             {temperatures.map(
                                 (temp) => {
@@ -328,13 +322,13 @@ export const Register = (props) => {
                 <fieldset>
                     <div className="form-group">
                         <select className="dropDowns"
-                                onChange={
-                                    (event) => {
-                                        const copy = { ...profile }
-                                        copy.sleepNoise = parseInt(event.target.value)
-                                        updateProfile(copy)
-                                    }
-                                }>
+                            onChange={
+                                (event) => {
+                                    const copy = { ...profile }
+                                    copy.sleepNoise = parseInt(event.target.value)
+                                    updateProfile(copy)
+                                }
+                            }>
                             <option value="0">Sleep Noise</option>
                             {sleepNoises.map(
                                 (noise) => {
@@ -349,12 +343,16 @@ export const Register = (props) => {
                 </fieldset>
 
                 <button
-                    onClick={(clickEvent) => handleRegister(clickEvent)}
-                    type="submit" className="button"> Register </button>
+                    onClick={(clickEvent) => handleEdit(clickEvent)}
+                    type="submit" className="button"> Submit Changes
+                </button>
+                <button
+                    onClick={(clickEvent) => deleteAccount(clickEvent)}
+                    type="delete" id="deleteButton"> Delete Account
+
+                </button>
 
             </form>
         </main>
     )
 }
-
-

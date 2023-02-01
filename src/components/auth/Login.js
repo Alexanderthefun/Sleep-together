@@ -18,6 +18,7 @@ export const Login = () => {
                     localStorage.setItem("sleeper_user", JSON.stringify({
                         id: user.id,
                         staff: user.isStaff
+                        
                     }))
 
                     navigate("/")
