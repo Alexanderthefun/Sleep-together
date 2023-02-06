@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
-//Should this be the same thing as register except use PUT instead of POST?
-//If so, should I put all the attributes on my local-user so I can have it all populated in the input fields? 
 
-// Make a button for delete
 export const EditProfile = () => {
-    const [genders, setGenders] = useState([])
+    const [active, setActive] = useState(true)
     const [genderMatchPreferences, setGenderMatchPreferences] = useState([])
     const [sleepPositions, setSleepPositions] = useState([])
     const [sleepDepths, setSleepDepths] = useState([])
@@ -16,24 +13,24 @@ export const EditProfile = () => {
     const [wakingTimes, setWakingTimes] = useState([])
     const [sleepNoises, setSleepNoises] = useState([])
     const [user, setUser] = useState([])
-    const [active, setActive] = useState(true)
     const [error, setError] = useState([])
+    const [isDeleting, setIsDeleting] = useState(false)
     const [profile, updateProfile] = useState({
         fullName: user.fullName,
         email: '',
-        gender: '',
-        genderMatchPreference: '',
-        sleepPosition: '',
-        sleepDepth: '',
-        mattressType: '',
-        bedTime: '',
-        temperature: '',
-        wakingTime: '',
-        sleepNoise: '',
+        accountActive: '',
+        genderMatchPreferenceId: '',
+        sleepPositionId: '',
+        sleepDepthId: '',
+        mattressTypeId: '',
+        bedTimeId: '',
+        temperatureId: '',
+        wakingTimeId: '',
+        sleepNoiseId: '',
         accountActive: true
     })
     useEffect(() => {
-        Promise.all([fetch('http://localhost:8088/genders'), fetch('http://localhost:8088/genderMatchPreferences'),
+        Promise.all([fetch('http://localhost:8088/users?accountActive'), fetch('http://localhost:8088/genderMatchPreferences'),
         fetch('http://localhost:8088/sleepPositions'), fetch('http://localhost:8088/sleepDepths'),
         fetch('http://localhost:8088/mattressTypes'), fetch('http://localhost:8088/bedTimes'),
         fetch('http://localhost:8088/temperatures'), fetch('http://localhost:8088/wakingTimes'),
@@ -41,7 +38,7 @@ export const EditProfile = () => {
         ])
             .then(([res1, res2, res3, res4, res5, res6, res7, res8, res9, res10]) => Promise.all([res1.json(), res2.json(), res3.json(), res4.json(), res5.json(), res6.json(), res7.json(), res8.json(), res9.json(), res10.json()]))
             .then(([data1, data2, data3, data4, data5, data6, data7, data8, data9, data10]) => {
-                setGenders(data1)
+                setActive(data1)
                 setGenderMatchPreferences(data2)
                 setSleepPositions(data3)
                 setSleepDepths(data4)
@@ -77,11 +74,10 @@ export const EditProfile = () => {
     const finishEdit = () => {
         if (
             profile.fullName && profile.email &&
-            profile.gender && profile.genderMatchPreference &&
-            profile.sleepPosition && profile.sleepDepth &&
-            profile.mattressType && profile.temperature &&
-            profile.bedTime && profile.wakingTime &&
-            profile.sleepNoise
+            profile.sleepNoiseId && profile.genderMatchPreferenceId &&
+            profile.sleepPositionId && profile.sleepDepthId &&
+            profile.mattressTypeId && profile.temperatureId &&
+            profile.bedTimeId && profile.wakingTimeId 
         ) {
             return fetch(`http://localhost:8088/users/${sleeperUserObject.id}`, {
                 method: "PUT",
@@ -108,10 +104,14 @@ export const EditProfile = () => {
     }
 
     const deleteAccount = (e) => {
-        return fetch(`http://localhost:8088/users/${sleeperUserObject.id}`, {
-            method: "DELETE",
-        })
-            .then(navigate("/login"))
+        if (window.confirm('Are You sure you want to delete your account?')){
+            setIsDeleting(true)
+            return fetch(`http://localhost:8088/users/${sleeperUserObject.id}`, {
+                method: "DELETE",
+            })
+                .then(navigate("/login"))
+        }
+        else (setIsDeleting(false))
     }
 
     return (
@@ -148,30 +148,7 @@ export const EditProfile = () => {
                             onChange={
                                 (event) => {
                                     const copy = { ...profile }
-                                    copy.gender = parseInt(event.target.value)
-                                    updateProfile(copy)
-                                }
-                            }>
-                            <option value="0">Select Gender</option>
-                            {genders.map(
-                                (gender) => {
-                                    return <option
-                                        key={gender.id}
-                                        value={gender.id}>
-                                        {gender.type}</option>
-                                }
-                            )}
-                        </select>
-
-                    </div>
-                </fieldset>
-                <fieldset>
-                    <div className="form-group">
-                        <select className="dropDowns"
-                            onChange={
-                                (event) => {
-                                    const copy = { ...profile }
-                                    copy.genderMatchPreference = parseInt(event.target.value)
+                                    copy.genderMatchPreferenceId = parseInt(event.target.value)
                                     updateProfile(copy)
                                 }
                             }>
@@ -193,7 +170,7 @@ export const EditProfile = () => {
                             onChange={
                                 (event) => {
                                     const copy = { ...profile }
-                                    copy.sleepPosition = parseInt(event.target.value)
+                                    copy.sleepPositionId = parseInt(event.target.value)
                                     updateProfile(copy)
                                 }
                             }>
@@ -201,6 +178,7 @@ export const EditProfile = () => {
                             {sleepPositions.map(
                                 (position) => {
                                     return <option
+                                        key={position.id}
                                         id={position.id}
                                         value={position.id}>
                                         {position.type}</option>
@@ -215,7 +193,7 @@ export const EditProfile = () => {
                             onChange={
                                 (event) => {
                                     const copy = { ...profile }
-                                    copy.sleepDepth = parseInt(event.target.value)
+                                    copy.sleepDepthId = parseInt(event.target.value)
                                     updateProfile(copy)
                                 }
                             }>
@@ -237,7 +215,7 @@ export const EditProfile = () => {
                             onChange={
                                 (event) => {
                                     const copy = { ...profile }
-                                    copy.mattressType = parseInt(event.target.value)
+                                    copy.mattressTypeId = parseInt(event.target.value)
                                     updateProfile(copy)
                                 }
                             }>
@@ -259,7 +237,7 @@ export const EditProfile = () => {
                             onChange={
                                 (event) => {
                                     const copy = { ...profile }
-                                    copy.bedTime = parseInt(event.target.value)
+                                    copy.bedTimeId = parseInt(event.target.value)
                                     updateProfile(copy)
                                 }
                             }>
@@ -281,7 +259,7 @@ export const EditProfile = () => {
                             onChange={
                                 (event) => {
                                     const copy = { ...profile }
-                                    copy.wakingTime = parseInt(event.target.value)
+                                    copy.wakingTimeId = parseInt(event.target.value)
                                     updateProfile(copy)
                                 }
                             }>
@@ -303,7 +281,7 @@ export const EditProfile = () => {
                             onChange={
                                 (event) => {
                                     const copy = { ...profile }
-                                    copy.temperature = parseInt(event.target.value)
+                                    copy.temperatureId = parseInt(event.target.value)
                                     updateProfile(copy)
                                 }
                             }>
@@ -325,7 +303,7 @@ export const EditProfile = () => {
                             onChange={
                                 (event) => {
                                     const copy = { ...profile }
-                                    copy.sleepNoise = parseInt(event.target.value)
+                                    copy.sleepNoiseId = parseInt(event.target.value)
                                     updateProfile(copy)
                                 }
                             }>

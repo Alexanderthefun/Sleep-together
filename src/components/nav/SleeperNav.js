@@ -7,7 +7,7 @@ export const SleeperNav = () => {
     return (
         <ul className="navbar">
             <li className="navbar__item active">
-                <Link className="navbar__link" to="/tickets">Matches</Link>
+                <Link className="navbar__link" to="/mymatches">Matches</Link>
             </li>
             <li className="navbar__item active">
                 <Link className="navbar__link" to="/profile">Edit Profile</Link>

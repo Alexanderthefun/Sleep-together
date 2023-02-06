@@ -6,18 +6,18 @@ export const Register = (props) => {
     const [profile, updateProfile] = useState({
         fullName: '',
         email: '',
-        gender: '',
-        genderMatchPreference: '',
-        sleepPosition: '',
-        sleepDepth: '',
-        mattressType: '',
-        bedTime: '',
-        temperature: '',
-        wakingTime: '',
-        sleepNoise: '',
-        accountActive: true
+        genderMatchPreferenceId: '',
+        sleepPositionId: '',
+        sleepDepthId: '',
+        mattressTypeId: '',
+        bedTimeId: '',
+        temperatureId: '',
+        wakingTimeId: '',
+        sleepNoiseId: '',
+        image: null,
+        accountActiveId: true
     })
-    const [genders, setGenders] = useState([])
+    const [active, setActive] = useState(true)
     const [genderMatchPreferences, setGenderMatchPreferences] = useState([])
     const [sleepPositions, setSleepPositions] = useState([])
     const [sleepDepths, setSleepDepths] = useState([])
@@ -29,7 +29,7 @@ export const Register = (props) => {
     const [error, setError] = useState([])
 
     useEffect(() => {
-        Promise.all([fetch('http://localhost:8088/genders'), fetch('http://localhost:8088/genderMatchPreferences'),
+        Promise.all([fetch('http://localhost:8088/users?accountActive'), fetch('http://localhost:8088/genderMatchPreferences'),
         fetch('http://localhost:8088/sleepPositions'), fetch('http://localhost:8088/sleepDepths'),
         fetch('http://localhost:8088/mattressTypes'), fetch('http://localhost:8088/bedTimes'),
         fetch('http://localhost:8088/temperatures'), fetch('http://localhost:8088/wakingTimes'),
@@ -37,7 +37,7 @@ export const Register = (props) => {
         ])
             .then(([res1, res2, res3, res4, res5, res6, res7, res8, res9]) => Promise.all([res1.json(), res2.json(), res3.json(), res4.json(), res5.json(), res6.json(), res7.json(), res8.json(), res9.json()]))
             .then(([data1, data2, data3, data4, data5, data6, data7, data8, data9]) => {
-                setGenders(data1)
+                setActive(data1)
                 setGenderMatchPreferences(data2)
                 setSleepPositions(data3)
                 setSleepDepths(data4)
@@ -74,11 +74,12 @@ export const Register = (props) => {
     const registerNewUser = () => {
         if (
             profile.fullName && profile.email &&
-            profile.gender && profile.genderMatchPreference &&
-            profile.sleepPosition && profile.sleepDepth &&
-            profile.mattressType && profile.temperature &&
-            profile.bedTime && profile.wakingTime &&
-            profile.sleepNoise
+            profile.sleepNoiseId && profile.genderMatchPreferenceId &&
+            profile.sleepPositionId && profile.sleepDepthId &&
+            profile.mattressTypeId && profile.temperatureId &&
+            profile.bedTimeId && profile.wakingTimeId 
+            // && profile.image
+            
         ) {
             return fetch(`http://localhost:8088/users/`, {
                 method: "POST",
@@ -119,7 +120,7 @@ export const Register = (props) => {
                 }
             })
     }
-// Maybe put everything below into a separate component in another module and call it here?
+
     return (
         <main style={{ textAlign: "center" }}>
             <form className="form--login" onSubmit={handleRegister}>
@@ -154,30 +155,7 @@ export const Register = (props) => {
                             onChange={
                                 (event) => {
                                     const copy = { ...profile }
-                                    copy.gender = parseInt(event.target.value)
-                                    updateProfile(copy)
-                                }
-                            }>
-                            <option value="0">Select Gender</option>
-                            {genders.map(
-                                (gender) => {
-                                    return <option
-                                        key={gender.id}
-                                        value={gender.id}>
-                                        {gender.type}</option>
-                                }
-                            )}
-                        </select>
-
-                    </div>
-                </fieldset>
-                <fieldset>
-                    <div className="form-group">
-                        <select className="dropDowns"
-                            onChange={
-                                (event) => {
-                                    const copy = { ...profile }
-                                    copy.genderMatchPreference = parseInt(event.target.value)
+                                    copy.genderMatchPreferenceId = parseInt(event.target.value)
                                     updateProfile(copy)
                                 }
                             }>
@@ -199,7 +177,7 @@ export const Register = (props) => {
                             onChange={
                                 (event) => {
                                     const copy = { ...profile }
-                                    copy.sleepPosition = parseInt(event.target.value)
+                                    copy.sleepPositionId = parseInt(event.target.value)
                                     updateProfile(copy)
                                 }
                             }>
@@ -207,6 +185,7 @@ export const Register = (props) => {
                             {sleepPositions.map(
                                 (position) => {
                                     return <option
+                                        key={position.id}
                                         id={position.id}
                                         value={position.id}>
                                         {position.type}</option>
@@ -221,7 +200,7 @@ export const Register = (props) => {
                                 onChange={
                                     (event) => {
                                         const copy = { ...profile }
-                                        copy.sleepDepth = parseInt(event.target.value)
+                                        copy.sleepDepthId = parseInt(event.target.value)
                                         updateProfile(copy)
                                     }
                                 }>
@@ -243,7 +222,7 @@ export const Register = (props) => {
                                 onChange={
                                     (event) => {
                                         const copy = { ...profile }
-                                        copy.mattressType = parseInt(event.target.value)
+                                        copy.mattressTypeId = parseInt(event.target.value)
                                         updateProfile(copy)
                                     }
                                 }>
@@ -265,7 +244,7 @@ export const Register = (props) => {
                                 onChange={
                                     (event) => {
                                         const copy = { ...profile }
-                                        copy.bedTime = parseInt(event.target.value)
+                                        copy.bedTimeId = parseInt(event.target.value)
                                         updateProfile(copy)
                                     }
                                 }>
@@ -287,7 +266,7 @@ export const Register = (props) => {
                                 onChange={
                                     (event) => {
                                         const copy = { ...profile }
-                                        copy.wakingTime = parseInt(event.target.value)
+                                        copy.wakingTimeId = parseInt(event.target.value)
                                         updateProfile(copy)
                                     }
                                 }>
@@ -309,7 +288,7 @@ export const Register = (props) => {
                                 onChange={
                                     (event) => {
                                         const copy = { ...profile }
-                                        copy.temperature = parseInt(event.target.value)
+                                        copy.temperatureId = parseInt(event.target.value)
                                         updateProfile(copy)
                                     }
                                 }>
@@ -331,7 +310,7 @@ export const Register = (props) => {
                                 onChange={
                                     (event) => {
                                         const copy = { ...profile }
-                                        copy.sleepNoise = parseInt(event.target.value)
+                                        copy.sleepNoiseId = parseInt(event.target.value)
                                         updateProfile(copy)
                                     }
                                 }>
@@ -347,6 +326,24 @@ export const Register = (props) => {
                         </select>
                     </div>
                 </fieldset>
+                {/* <fieldset>
+                    <div className="imgWrapper">
+                        <label htmlFor="img">Upload Image </label>
+                        <input 
+                        type="file"
+                        accept="image/png, image/jpg, image/jpeg"
+                        name="img"
+                        className="imageInput"
+                        onChange={
+                            (event) => {
+                                const copy = {...profile}
+                                copy.image = (event.target.files[0])
+                                updateProfile(copy)
+                            }
+                        }></input>
+                        
+                    </div>
+                </fieldset> */}
 
                 <button
                     onClick={(clickEvent) => handleRegister(clickEvent)}
@@ -357,4 +354,6 @@ export const Register = (props) => {
     )
 }
 
+// figure out why register doesnt work.
+// figure out image upload.
 
