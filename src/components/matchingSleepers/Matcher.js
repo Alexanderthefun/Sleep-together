@@ -14,6 +14,11 @@ export const MatchMaker = () => {
     const [allUsers, setAllUsers] = useState([])
     const [user1, setUser1] = useState({})
     const [matches, setMatches] = useState([])
+    const [pairsToSend, updatePairsToSend] = useState({
+        user1Id: user1.id,
+        user2Id: '',
+        active: true
+    })
 
     const localSleeperUser = localStorage.getItem("sleeper_user")
     const sleeperUserObject = JSON.parse(localSleeperUser)
@@ -34,8 +39,6 @@ export const MatchMaker = () => {
     }, [])
 
 
-
-
     const doTheMath = () => {
         let candidatesArr = []
         const genderMatches = genderMatch(user1, allUsers)
@@ -48,24 +51,37 @@ export const MatchMaker = () => {
         candidatesArr.push(tempMatch(user1, allUsers))
 
         const candidates = [].concat(...candidatesArr)
-        let counts = {}
-        for (const person of candidates) {
-            if (!candidates[person.id]) {
-                counts[person.id] = 1
+        const count = {}
+        const trueMatches = []
+        candidates.forEach(person => {
+            if(!count[person]) {
+                count[person] = 1;
+            } else {
+                count[person]++
             }
-            else {
-                counts += 1
+            if (count[person] >= 4 && genderMatches.includes(person) && !trueMatches.includes(person) ) {
+                trueMatches.push(person)
             }
-            if (candidates[person.id] >= 4 && genderMatches.includes(person.id)) {
-                setMatches(person)
-            }
-            return matches
-        }
+            
+        })
+        setMatches(trueMatches)
     }
 
-    doTheMath()
 
 
+    useEffect(() => {
+        if (allUsers.length && Object.keys(user1).length) {
+            doTheMath()
+        }
+    }, [allUsers, user1])
+
+    //make a condition that checks if the match exists or not.
+    //if not, send user1.id and user2.id as well as active:true to the "matches" table in the database.
+    //make a separate component that checks if match it active, if so displays the JSX for it.
+    //write a button in the JSX that allows them to delete matches.
+    useEffect(() => {
+
+    })
 
     return (
 
