@@ -1,4 +1,5 @@
 import { Outlet, Route, Routes } from "react-router-dom"
+import { MatchMaker } from "../matchingSleepers/Matcher"
 import { EditProfile } from "../profile/EditProfile"
 
 
@@ -16,6 +17,7 @@ export const SleeperViews = () => {
             }>
             
             <Route path="profile" element={ <EditProfile />} />
+            <Route path="mymatches" element={ <MatchMaker />} />
                 
             </Route>
         </Routes>

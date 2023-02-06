@@ -7,7 +7,7 @@ button,
 input,
 select,
 textarea {
-  color: #404040;
+  color: #383737;
   font-family: "Comfortaa", Arial, sans-serif;
   font-size: 14px;
   line-height: 1.5;
@@ -15,6 +15,7 @@ textarea {
 
 body {
     padding: 0 3rem;
+    background-color: rgb(113, 113, 116);
 }
 
 h1, h2, h3, h4, h5, h6 {
