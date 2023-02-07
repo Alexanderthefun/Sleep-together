@@ -1,0 +1,15 @@
+.matcherBody {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.user1 {
+    border: 2px solid black;
+}
+
+.individuals {
+    border: 2px solid black;
+    margin: 6px;
+    width: 20rem;
+    height: 8rem;
+}
