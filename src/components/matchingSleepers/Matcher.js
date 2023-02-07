@@ -85,7 +85,8 @@ export const MatchMaker = () => {
             .then(res => {
                 setExisting(res)
             })
-    }, [])
+    }, [isDeletingMatch])
+
 
     //POSTING NEW MATCHES
     useEffect(() => {
@@ -112,11 +113,19 @@ export const MatchMaker = () => {
     }, [existingMatches])
 
     // DELETING MATCHES (not gonna work until post works) is matches.id correct in the param?
-    const deleteMatch = (e) => {
+    const deleteMatch = (e,f) => {
         if (window.confirm('Are You sure you want to delete this match?')) {
             setIsDeletingMatch(true)
             return fetch(`http://localhost:8088/matches/${e}`, {
-                method: "DELETE",
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    user1Id: user1.id,
+                    userId: f,
+                    active: false
+                })
             })
                 .then(navigate("/mymatches"))
         }
@@ -143,19 +152,21 @@ export const MatchMaker = () => {
             <div className="matches">
                 {existingMatches.map(
                     (match) => {
+                        if (match.active){
                         return <div className="individuals" key={match?.user?.id}>{match?.user?.fullName} --
                             <button
-                                onClick={(clickEvent) => deleteMatch(match.id)}
+                                onClick={(clickEvent) => deleteMatch(match.id, match.userId)}
                                 type="delete" className="deleteMatchButton"
                                 > Delete Match
 
                             </button>
-                        </div>
+                        </div>}
                     }
                 )}
             </div>
-
+            <div></div>
         </div>
+        
     )
 
 
