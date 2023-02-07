@@ -2,18 +2,23 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { bedtimeMatch } from "./bedtime"
 import { genderMatch } from "./genders"
+import { JSX } from "./JSX"
 import { mattressTypeMatch } from "./mattressType"
 import { sleepDepthMatch } from "./sleepDepth"
 import { sleepNoiseMatch } from "./sleepNoise"
 import { sleepPositionMatch } from "./sleepPosition"
 import { tempMatch } from "./temperatures"
 import { wakingTimeMatch } from "./wakingTime"
+import "./Matcher.css"
 
 
 export const MatchMaker = () => {
+    const navigate = useNavigate()
     const [allUsers, setAllUsers] = useState([])
     const [user1, setUser1] = useState({})
     const [matches, setMatches] = useState([])
+    const [existingMatches, setExisting] = useState([])
+    const [isDeletingMatch, setIsDeletingMatch] = useState(false)
     const [pairsToSend, updatePairsToSend] = useState({
         user1Id: user1.id,
         user2Id: '',
@@ -54,37 +59,72 @@ export const MatchMaker = () => {
         const count = {}
         const trueMatches = []
         candidates.forEach(person => {
-            if(!count[person]) {
+            if (!count[person]) {
                 count[person] = 1;
             } else {
                 count[person]++
             }
-            if (count[person] >= 4 && genderMatches.includes(person) && !trueMatches.includes(person) ) {
+            if (count[person] >= 4 && genderMatches.includes(person) && !trueMatches.includes(person)) {
                 trueMatches.push(person)
             }
-            
+
         })
         setMatches(trueMatches)
     }
-
-
-
+    //TRIGGER ALGORITHM 
     useEffect(() => {
         if (allUsers.length && Object.keys(user1).length) {
             doTheMath()
         }
     }, [allUsers, user1])
 
-    //make a condition that checks if the match exists or not.
-    //if not, send user1.id and user2.id as well as active:true to the "matches" table in the database.
-    //make a separate component that checks if match it active, if so displays the JSX for it.
-    //write a button in the JSX that allows them to delete matches.
+    //GET EXISTING MATCHES
+    useEffect(() => {
+        fetch(`http://localhost:8088/matches?_expand=user&user1Id=${sleeperUserObject.id}`)
+            .then(res => res.json())
+            .then(res => {
+                setExisting(res)
+            })
+    }, [])
+
+    //POSTING NEW MATCHES
     useEffect(() => {
 
-    })
+        const promiseArr = matches.map(
+            (match => {
+                if (!existingMatches.find(existingMatch => existingMatch.userId === match.id && existingMatch.user1Id === user1.id)) {
+                return (fetch(`http://localhost:8088/matches`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        user1Id: user1.id,
+                        userId: match.id,
+                        active: true
+                    })
+                }))
+            }
+            })
+        )
+        Promise.all(promiseArr)
+            .then()
+    }, [existingMatches])
+
+    // DELETING MATCHES (not gonna work until post works) is matches.id correct in the param?
+    const deleteMatch = (e) => {
+        if (window.confirm('Are You sure you want to delete this match?')) {
+            setIsDeletingMatch(true)
+            return fetch(`http://localhost:8088/matches/${e}`, {
+                method: "DELETE",
+            })
+                .then(navigate("/mymatches"))
+        }
+        else (setIsDeletingMatch(false))
+    }
+
 
     return (
-
         <div className="matcherBody">
 
             <div className="user1">
@@ -100,10 +140,17 @@ export const MatchMaker = () => {
                     <li>{user1?.sleepPosition?.type}</li>
                 </ul>
             </div>
-            <div>
-                {matches.map(
+            <div className="matches">
+                {existingMatches.map(
                     (match) => {
-                        return <div>{match.fullName}</div>
+                        return <div className="individuals" key={match?.user?.id}>{match?.user?.fullName} --
+                            <button
+                                onClick={(clickEvent) => deleteMatch(match.id)}
+                                type="delete" className="deleteMatchButton"
+                                > Delete Match
+
+                            </button>
+                        </div>
                     }
                 )}
             </div>
