@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { bedtimeMatch } from "./bedtime"
 import { genderMatch } from "./genders"
-import { JSX } from "./JSX"
 import { mattressTypeMatch } from "./mattressType"
 import { sleepDepthMatch } from "./sleepDepth"
 import { sleepNoiseMatch } from "./sleepNoise"
@@ -112,7 +111,7 @@ export const MatchMaker = () => {
             .then()
     }, [existingMatches])
 
-    // DELETING MATCHES (not gonna work until post works) is matches.id correct in the param?
+
     const deleteMatch = (e,f) => {
         if (window.confirm('Are You sure you want to delete this match?')) {
             setIsDeletingMatch(true)
@@ -147,6 +146,7 @@ export const MatchMaker = () => {
                     <li>{user1?.mattressType?.type}</li>
                     <li>{user1?.temperature?.range}</li>
                     <li>{user1?.sleepPosition?.type}</li>
+                    {/* <li>{user1?.image}</li> */}
                 </ul>
             </div>
             <div className="matches">

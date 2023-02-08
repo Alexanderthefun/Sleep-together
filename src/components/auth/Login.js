@@ -35,7 +35,8 @@ export const Login = () => {
                 <form className="form--login" onSubmit={handleLogin}>
                     <h1>Sleep Together</h1>
                     <h2>Please sign in</h2>
-                    <fieldset>
+                    
+                    <fieldset className="loginField">
                         <label htmlFor="inputEmail"> Email address </label>
                         <input type="email"
                             value={email}
@@ -43,11 +44,11 @@ export const Login = () => {
                             className="form-control"
                             placeholder="Email address"
                             required autoFocus />
-                    </fieldset>
-                    <fieldset>
-                        <button type="submit">
+                            <button type="submit" className="button">
                             Sign in
                         </button>
+                    
+                        
                     </fieldset>
                 </form>
             </section>
