@@ -111,7 +111,7 @@ export const MatchMaker = () => {
             .then()
     }, [existingMatches])
 
-
+//delete matches
     const deleteMatch = (e,f) => {
         if (window.confirm('Are You sure you want to delete this match?')) {
             setIsDeletingMatch(true)
@@ -130,7 +130,6 @@ export const MatchMaker = () => {
         }
         else (setIsDeletingMatch(false))
     }
-
 
     return (
         <div className="matcherBody">
@@ -168,6 +167,8 @@ export const MatchMaker = () => {
         </div>
         
     )
+
+
 
 
 }
