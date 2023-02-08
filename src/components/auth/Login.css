@@ -1,0 +1,28 @@
+h1 {
+    text-align: center;
+    font-size: 40px;
+}
+
+.form--login {
+    text-align: center;
+}
+
+.loginField {
+    border: 2px solid black;
+    border-radius: 30px;
+    width: 250px;
+    margin: 8px;
+    padding: 1rem;
+    text-align: center;
+}
+
+.form-control {
+    width: 250px;
+}
+
+
+
+.button {
+    margin-top: 14px;
+    margin-bottom: 0px;
+}

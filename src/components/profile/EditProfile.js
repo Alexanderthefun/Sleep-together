@@ -16,7 +16,7 @@ export const EditProfile = () => {
     const [error, setError] = useState([])
     const [isDeleting, setIsDeleting] = useState(false)
     const [profile, updateProfile] = useState({
-        fullName: user.fullName,
+        fullName: '',
         email: '',
         accountActive: '',
         genderMatchPreferenceId: '',

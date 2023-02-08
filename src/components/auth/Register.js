@@ -14,7 +14,7 @@ export const Register = (props) => {
         temperatureId: '',
         wakingTimeId: '',
         sleepNoiseId: '',
-        image: null,
+        // image: null,
         accountActiveId: true
     })
     const [active, setActive] = useState(true)
@@ -52,10 +52,6 @@ export const Register = (props) => {
             })
     }, [])
 
-    // if (error) {
-    //     return <div>Error</div>
-    // }
-
     const localSleeperUser = localStorage.getItem("sleeper_user")
     const sleeperUserObject = JSON.parse(localSleeperUser)
 
@@ -70,6 +66,31 @@ export const Register = (props) => {
 
 
     let navigate = useNavigate()
+
+    
+    // const handleImageChange = (event) => {
+    //     updateProfile({...profile, image: event.target.files[0]})
+    // }
+
+    // const data = new Blob([JSON.stringify({
+    //     name: profile.fullName,
+    //     email: profile.email,
+    //     genderMatchPreferenceId: profile.genderMatchPreferenceId,
+    //     sleepPositionId: profile.sleepPositionId,
+    //     sleepDepthId: profile.sleepDepthId,
+    //     mattressTypeId: profile.mattressTypeId,
+    //     bedTimeId: profile.bedTimeId,
+    //     temperatureId: profile.temperatureId,
+    //     wakingTimeId: profile.wakingTimeId,
+    //     sleepNoiseId: profile.sleepNoiseId,
+    //     image: profile.image,
+    // })], { type: 'application/json' })
+
+    // (e) => {
+                            //     const copy = {...profile}
+                            //     copy.image = (e.target.files[0])
+                            //     updateProfile(copy)
+                            // }
 
     const registerNewUser = () => {
         if (
@@ -87,6 +108,7 @@ export const Register = (props) => {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(profile)
+                // body: data
             })
                 .then(res => res.json())
                 .then(createdUser => {
@@ -331,16 +353,11 @@ export const Register = (props) => {
                         <label htmlFor="img">Upload Image </label>
                         <input 
                         type="file"
-                        accept="image/png, image/jpg, image/jpeg"
+                        accept="image/*"
                         name="img"
                         className="imageInput"
-                        onChange={
-                            (event) => {
-                                const copy = {...profile}
-                                copy.image = (event.target.files[0])
-                                updateProfile(copy)
-                            }
-                        }></input>
+                        onChange={handleImageChange}></input>
+
                         
                     </div>
                 </fieldset> */}
@@ -354,6 +371,6 @@ export const Register = (props) => {
     )
 }
 
-// figure out why register doesnt work.
-// figure out image upload.
 
+// figure out image upload.
+// add sleep facts/ images to home page
