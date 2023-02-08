@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { Locations } from "../data/LocationDropDowns"
 import "./Login.css"
 
 export const Register = (props) => {
     const [profile, updateProfile] = useState({
         fullName: '',
         email: '',
+        state: '',
+        city: '',
         genderMatchPreferenceId: '',
         sleepPositionId: '',
         sleepDepthId: '',
@@ -14,7 +17,6 @@ export const Register = (props) => {
         temperatureId: '',
         wakingTimeId: '',
         sleepNoiseId: '',
-        // image: null,
         accountActiveId: true
     })
     const [active, setActive] = useState(true)
@@ -27,6 +29,7 @@ export const Register = (props) => {
     const [wakingTimes, setWakingTimes] = useState([])
     const [sleepNoises, setSleepNoises] = useState([])
     const [error, setError] = useState([])
+
 
     useEffect(() => {
         Promise.all([fetch('http://localhost:8088/users?accountActive'), fetch('http://localhost:8088/genderMatchPreferences'),
@@ -67,30 +70,6 @@ export const Register = (props) => {
 
     let navigate = useNavigate()
 
-    
-    // const handleImageChange = (event) => {
-    //     updateProfile({...profile, image: event.target.files[0]})
-    // }
-
-    // const data = new Blob([JSON.stringify({
-    //     name: profile.fullName,
-    //     email: profile.email,
-    //     genderMatchPreferenceId: profile.genderMatchPreferenceId,
-    //     sleepPositionId: profile.sleepPositionId,
-    //     sleepDepthId: profile.sleepDepthId,
-    //     mattressTypeId: profile.mattressTypeId,
-    //     bedTimeId: profile.bedTimeId,
-    //     temperatureId: profile.temperatureId,
-    //     wakingTimeId: profile.wakingTimeId,
-    //     sleepNoiseId: profile.sleepNoiseId,
-    //     image: profile.image,
-    // })], { type: 'application/json' })
-
-    // (e) => {
-                            //     const copy = {...profile}
-                            //     copy.image = (e.target.files[0])
-                            //     updateProfile(copy)
-                            // }
 
     const registerNewUser = () => {
         if (
@@ -98,9 +77,9 @@ export const Register = (props) => {
             profile.sleepNoiseId && profile.genderMatchPreferenceId &&
             profile.sleepPositionId && profile.sleepDepthId &&
             profile.mattressTypeId && profile.temperatureId &&
-            profile.bedTimeId && profile.wakingTimeId 
+            profile.bedTimeId && profile.wakingTimeId
             // && profile.image
-            
+
         ) {
             return fetch(`http://localhost:8088/users/`, {
                 method: "POST",
@@ -143,6 +122,21 @@ export const Register = (props) => {
             })
     }
 
+    /* <fieldset>
+                    <div className="imgWrapper">
+                        <label htmlFor="img">Upload Image </label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            name="img"
+                            className="imageInput"
+                            onChange={onFileChange}
+                        ></input>
+
+
+                    </div>
+                </fieldset> */
+
     return (
         <main style={{ textAlign: "center" }}>
             <form className="form--login" onSubmit={handleRegister}>
@@ -150,27 +144,28 @@ export const Register = (props) => {
                 <fieldset>
                     <label htmlFor="fullName"> Full Name </label>
                     <input onChange={
-                                (event) => {
-                                    const copy = { ...profile }
-                                    copy.fullName = event.target.value
-                                    updateProfile(copy)
-                                }
-                            }
+                        (event) => {
+                            const copy = { ...profile }
+                            copy.fullName = event.target.value
+                            updateProfile(copy)
+                        }
+                    }
                         type="text" id="fullName" className="form-control"
                         placeholder="Enter your name" required autoFocus />
                 </fieldset>
                 <fieldset>
                     <label htmlFor="email"> Email address </label>
                     <input onChange={
-                                (event) => {
-                                    const copy = { ...profile }
-                                    copy.email = event.target.value
-                                    updateProfile(copy)
-                                }
-                            }
+                        (event) => {
+                            const copy = { ...profile }
+                            copy.email = event.target.value
+                            updateProfile(copy)
+                        }
+                    }
                         type="email" id="email" className="form-control"
                         placeholder="Email address" required />
                 </fieldset>
+                <Locations />
                 <fieldset>
                     <div className="form-group">
                         <select className="dropDowns"
@@ -219,13 +214,13 @@ export const Register = (props) => {
                 <fieldset>
                     <div className="form-group">
                         <select className="dropDowns"
-                                onChange={
-                                    (event) => {
-                                        const copy = { ...profile }
-                                        copy.sleepDepthId = parseInt(event.target.value)
-                                        updateProfile(copy)
-                                    }
-                                }>
+                            onChange={
+                                (event) => {
+                                    const copy = { ...profile }
+                                    copy.sleepDepthId = parseInt(event.target.value)
+                                    updateProfile(copy)
+                                }
+                            }>
                             <option value="0">Sleep Depth</option>
                             {sleepDepths.map(
                                 (depth) => {
@@ -241,13 +236,13 @@ export const Register = (props) => {
                 <fieldset>
                     <div className="form-group">
                         <select className="dropDowns"
-                                onChange={
-                                    (event) => {
-                                        const copy = { ...profile }
-                                        copy.mattressTypeId = parseInt(event.target.value)
-                                        updateProfile(copy)
-                                    }
-                                }>
+                            onChange={
+                                (event) => {
+                                    const copy = { ...profile }
+                                    copy.mattressTypeId = parseInt(event.target.value)
+                                    updateProfile(copy)
+                                }
+                            }>
                             <option value="0">Mattress Type</option>
                             {mattressTypes.map(
                                 (type) => {
@@ -263,13 +258,13 @@ export const Register = (props) => {
                 <fieldset>
                     <div className="form-group">
                         <select className="dropDowns"
-                                onChange={
-                                    (event) => {
-                                        const copy = { ...profile }
-                                        copy.bedTimeId = parseInt(event.target.value)
-                                        updateProfile(copy)
-                                    }
-                                }>
+                            onChange={
+                                (event) => {
+                                    const copy = { ...profile }
+                                    copy.bedTimeId = parseInt(event.target.value)
+                                    updateProfile(copy)
+                                }
+                            }>
                             <option value="0">Bedtime</option>
                             {bedTimes.map(
                                 (bedtime) => {
@@ -285,13 +280,13 @@ export const Register = (props) => {
                 <fieldset>
                     <div className="form-group">
                         <select className="dropDowns"
-                                onChange={
-                                    (event) => {
-                                        const copy = { ...profile }
-                                        copy.wakingTimeId = parseInt(event.target.value)
-                                        updateProfile(copy)
-                                    }
-                                }>
+                            onChange={
+                                (event) => {
+                                    const copy = { ...profile }
+                                    copy.wakingTimeId = parseInt(event.target.value)
+                                    updateProfile(copy)
+                                }
+                            }>
                             <option value="0">Waking Time</option>
                             {wakingTimes.map(
                                 (wakingTime) => {
@@ -307,13 +302,13 @@ export const Register = (props) => {
                 <fieldset>
                     <div className="form-group">
                         <select className="dropDowns"
-                                onChange={
-                                    (event) => {
-                                        const copy = { ...profile }
-                                        copy.temperatureId = parseInt(event.target.value)
-                                        updateProfile(copy)
-                                    }
-                                }>
+                            onChange={
+                                (event) => {
+                                    const copy = { ...profile }
+                                    copy.temperatureId = parseInt(event.target.value)
+                                    updateProfile(copy)
+                                }
+                            }>
                             <option value="0">Temperature</option>
                             {temperatures.map(
                                 (temp) => {
@@ -329,13 +324,13 @@ export const Register = (props) => {
                 <fieldset>
                     <div className="form-group">
                         <select className="dropDowns"
-                                onChange={
-                                    (event) => {
-                                        const copy = { ...profile }
-                                        copy.sleepNoiseId = parseInt(event.target.value)
-                                        updateProfile(copy)
-                                    }
-                                }>
+                            onChange={
+                                (event) => {
+                                    const copy = { ...profile }
+                                    copy.sleepNoiseId = parseInt(event.target.value)
+                                    updateProfile(copy)
+                                }
+                            }>
                             <option value="0">Sleep Noise</option>
                             {sleepNoises.map(
                                 (noise) => {
@@ -348,19 +343,7 @@ export const Register = (props) => {
                         </select>
                     </div>
                 </fieldset>
-                {/* <fieldset>
-                    <div className="imgWrapper">
-                        <label htmlFor="img">Upload Image </label>
-                        <input 
-                        type="file"
-                        accept="image/*"
-                        name="img"
-                        className="imageInput"
-                        onChange={handleImageChange}></input>
-
-                        
-                    </div>
-                </fieldset> */}
+                
 
                 <button
                     onClick={(clickEvent) => handleRegister(clickEvent)}

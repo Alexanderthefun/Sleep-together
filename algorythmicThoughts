@@ -3,13 +3,6 @@
 
 //dont forget about admins who can delete users.    
 
-
-// SOFT DELETE- instead of deleting from database, set active false.
-// Set it to true by default. 
-
-//clicking "my matches" will trigger and go through users to 
-
-
 // MVP
 // Create a profile.			
 // Delete their profile.			
@@ -29,17 +22,7 @@
 // Desperation Button that switches certain properties to “indifferent” to raise matching odds.
 // New employees registration page.
 // Make a simple sleepy song to play on the website. User can mute it if prefered. 
-// Sleep Preference attributes:
-// "temperature": 
-// "wakingTime":
-// "sleepNoise":
-// 
-// consider only making matches if the userId does or does not exist in the matches table.
 
-// .count() on arrays of matching or nonmatching attributes
-// post matches to database.
-
-// may want to put editing on stretch goals.
 // ERD: https://dbdiagram.io/d/63d3f6b6296d97641d7c99a7
 // Wireframe: https://miro.com/app/board/uXjVPtHjYb8=/ 
 
