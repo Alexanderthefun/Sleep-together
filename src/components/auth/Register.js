@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { Locations } from "../data/LocationDropDowns"
+import { Locations } from "./LocationDropDowns"
 import "./Login.css"
 
-export const Register = (props) => {
+export const Register = ({ profileState }) => {
     const [profile, updateProfile] = useState({
         fullName: '',
         email: '',
-        state: '',
-        city: '',
         genderMatchPreferenceId: '',
         sleepPositionId: '',
         sleepDepthId: '',
@@ -30,6 +28,14 @@ export const Register = (props) => {
     const [sleepNoises, setSleepNoises] = useState([])
     const [error, setError] = useState([])
 
+
+    useEffect(
+        () => {
+            profile.state = profileState.state
+            profile.city = profileState.city
+        },
+        [profileState]
+    )
 
     useEffect(() => {
         Promise.all([fetch('http://localhost:8088/users?accountActive'), fetch('http://localhost:8088/genderMatchPreferences'),
@@ -78,7 +84,7 @@ export const Register = (props) => {
             profile.sleepPositionId && profile.sleepDepthId &&
             profile.mattressTypeId && profile.temperatureId &&
             profile.bedTimeId && profile.wakingTimeId
-            // && profile.image
+            && profile.state && profile.city
 
         ) {
             return fetch(`http://localhost:8088/users/`, {
@@ -165,7 +171,7 @@ export const Register = (props) => {
                         type="email" id="email" className="form-control"
                         placeholder="Email address" required />
                 </fieldset>
-                <Locations />
+                
                 <fieldset>
                     <div className="form-group">
                         <select className="dropDowns"
