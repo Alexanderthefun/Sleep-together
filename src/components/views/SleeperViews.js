@@ -18,6 +18,7 @@ export const SleeperViews = () => {
             
             <Route path="profile" element={ <EditProfile />} />
             <Route path="mymatches" element={ <MatchMaker />} />
+            {/* <Route path="mymatches" element={ <MatchMaker />} /> */}
                 
             </Route>
         </Routes>

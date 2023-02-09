@@ -1,8 +1,13 @@
 import { useEffect, useState } from "react"
-import { citiesApi, statesApi } from "./dataAccess"
+import { citiesApi, statesApi } from "../data/dataAccess"
 
-
-export const Locations = () => {
+//remember to serve both databases.
+//make a container for EditProfile and implement the same shit. 
+//alter the conditional to either state or city for the Match algorithm.
+//maybe shift name, email, location to new div and place together under "basic info".
+//remake all users and add photos.
+//baddabing muthafucka. (now do css) 
+export const Locations = ({ setterFunction }) => {
     const [states, setStates] = useState([])
     const [cities, setCities] = useState([])
     const [selectedState, setSelectedState] = useState('')
@@ -37,6 +42,12 @@ export const Locations = () => {
             })
         }
     },[selectedCity])
+
+    useEffect(() => {
+      if (selectedCity && selectedState) {
+        setterFunction(profile)
+      }
+    }, [profile])
 
 
 
