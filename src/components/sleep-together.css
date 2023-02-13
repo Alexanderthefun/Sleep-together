@@ -7,7 +7,7 @@ button,
 input,
 select,
 textarea {
-  color: #383737;
+  color: #8699ed;
   font-family: "Comfortaa", Arial, sans-serif;
   font-size: 14px;
   line-height: 1.5;
@@ -15,7 +15,9 @@ textarea {
 
 body {
     padding: 0 3rem;
-    background-color: rgb(131, 131, 251);
+    background-color: rgb(79, 114, 253);
+    background-image: url('https://cdn.pixabay.com/photo/2018/08/14/13/23/ocean-3605547_960_720.jpg');
+    background-size: cover;
 }
 
 h1, h2, h3, h4, h5, h6 {

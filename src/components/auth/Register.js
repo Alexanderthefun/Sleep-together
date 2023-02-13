@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { Locations } from "./LocationDropDowns"
+
 import "./Login.css"
 
 export const Register = ({ profileState }) => {
@@ -15,7 +15,9 @@ export const Register = ({ profileState }) => {
         temperatureId: '',
         wakingTimeId: '',
         sleepNoiseId: '',
-        accountActiveId: true
+        snoreId: '',
+        accountActive: true,
+        image: ''
     })
     const [active, setActive] = useState(true)
     const [genderMatchPreferences, setGenderMatchPreferences] = useState([])
@@ -26,6 +28,7 @@ export const Register = ({ profileState }) => {
     const [temperatures, setTemperatures] = useState([])
     const [wakingTimes, setWakingTimes] = useState([])
     const [sleepNoises, setSleepNoises] = useState([])
+    const [snores, setSnores] = useState([])
     const [error, setError] = useState([])
 
 
@@ -42,10 +45,10 @@ export const Register = ({ profileState }) => {
         fetch('http://localhost:8088/sleepPositions'), fetch('http://localhost:8088/sleepDepths'),
         fetch('http://localhost:8088/mattressTypes'), fetch('http://localhost:8088/bedTimes'),
         fetch('http://localhost:8088/temperatures'), fetch('http://localhost:8088/wakingTimes'),
-        fetch('http://localhost:8088/sleepNoises')
+        fetch('http://localhost:8088/sleepNoises'), fetch('http://localhost:8088/snores')
         ])
-            .then(([res1, res2, res3, res4, res5, res6, res7, res8, res9]) => Promise.all([res1.json(), res2.json(), res3.json(), res4.json(), res5.json(), res6.json(), res7.json(), res8.json(), res9.json()]))
-            .then(([data1, data2, data3, data4, data5, data6, data7, data8, data9]) => {
+            .then(([res1, res2, res3, res4, res5, res6, res7, res8, res9, res10]) => Promise.all([res1.json(), res2.json(), res3.json(), res4.json(), res5.json(), res6.json(), res7.json(), res8.json(), res9.json(), res10.json()]))
+            .then(([data1, data2, data3, data4, data5, data6, data7, data8, data9, data10]) => {
                 setActive(data1)
                 setGenderMatchPreferences(data2)
                 setSleepPositions(data3)
@@ -55,6 +58,7 @@ export const Register = ({ profileState }) => {
                 setTemperatures(data7)
                 setWakingTimes(data8)
                 setSleepNoises(data9)
+                setSnores(data10)
             })
             .catch(error => {
                 setError(error)
@@ -83,8 +87,9 @@ export const Register = ({ profileState }) => {
             profile.sleepNoiseId && profile.genderMatchPreferenceId &&
             profile.sleepPositionId && profile.sleepDepthId &&
             profile.mattressTypeId && profile.temperatureId &&
-            profile.bedTimeId && profile.wakingTimeId
-            && profile.state && profile.city
+            profile.bedTimeId && profile.wakingTimeId &&
+            profile.state && profile.city &&
+            profile.snoreId
 
         ) {
             return fetch(`http://localhost:8088/users/`, {
@@ -349,7 +354,28 @@ export const Register = ({ profileState }) => {
                         </select>
                     </div>
                 </fieldset>
-                
+                <fieldset>
+                    <div className="form-group">
+                        <select className="dropDowns"
+                            onChange={
+                                (event) => {
+                                    const copy = { ...profile }
+                                    copy.snoreId = parseInt(event.target.value)
+                                    updateProfile(copy)
+                                }
+                            }>
+                            <option value="0">Snoring Preference</option>
+                            {snores.map(
+                                (snore) => {
+                                    return <option
+                                        key={snore.id}
+                                        value={snore.id}>
+                                        {snore.preference}</option>
+                                }
+                            )}
+                        </select>
+                    </div>
+                </fieldset>
 
                 <button
                     onClick={(clickEvent) => handleRegister(clickEvent)}

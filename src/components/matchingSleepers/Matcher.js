@@ -9,6 +9,7 @@ import { sleepPositionMatch } from "./sleepPosition"
 import { tempMatch } from "./temperatures"
 import { wakingTimeMatch } from "./wakingTime"
 import "./Matcher.css"
+import { snoreMatch } from "./snore"
 
 
 export const MatchMaker = () => {
@@ -18,29 +19,30 @@ export const MatchMaker = () => {
     const [matches, setMatches] = useState([])
     const [existingMatches, setExisting] = useState([])
     const [isDeletingMatch, setIsDeletingMatch] = useState(false)
-    const [pairsToSend, updatePairsToSend] = useState({
-        user1Id: user1.id,
-        user2Id: '',
-        active: true
-    })
-
+    const [renderMatches, startRenderMatches] = useState(false)
     const localSleeperUser = localStorage.getItem("sleeper_user")
     const sleeperUserObject = JSON.parse(localSleeperUser)
 
     useEffect(() => {
-        fetch('http://localhost:8088/users?_expand=sleepDepth&_expand=bedTime&_expand=temperature&_expand=wakingTime&_expand=sleepNoise&_expand=mattressType&_expand=sleepPosition&_expand=genderMatchPreference')
-            .then(res => res.json())
+        const fetchUser1 = fetch(`http://localhost:8088/users?id=${sleeperUserObject.id}&_expand=sleepDepth&_expand=bedTime&_expand=temperature&_expand=wakingTime&_expand=sleepNoise&_expand=mattressType&_expand=sleepPosition&_expand=genderMatchPreference&_expand=snore`)
             .then(res => {
-                setAllUsers(res)
+                return res.json()
             })
-    }, [])
-    useEffect(() => {
-        fetch(`http://localhost:8088/users?id=${sleeperUserObject.id}&_expand=sleepDepth&_expand=bedTime&_expand=temperature&_expand=wakingTime&_expand=sleepNoise&_expand=mattressType&_expand=sleepPosition&_expand=genderMatchPreference`)
+
+        const fetchAllUsers = fetch('http://localhost:8088/users?_expand=sleepDepth&_expand=bedTime&_expand=temperature&_expand=wakingTime&_expand=sleepNoise&_expand=mattressType&_expand=sleepPosition&_expand=genderMatchPreference&_expand=snore')
             .then(res => res.json())
-            .then(res => {
-                setUser1(res[0])
-            })
+
+        const fetchExistingMatches = fetch(`http://localhost:8088/matches?_expand=user&user1Id=${sleeperUserObject.id}`)
+            .then(res => res.json())
+
+        Promise.all([fetchExistingMatches, fetchAllUsers, fetchUser1]).then((res) => {
+            setExisting(res[0])
+            setAllUsers(res[1])
+            setUser1(res[2][0])
+        })
     }, [])
+
+
 
 
     const doTheMath = () => {
@@ -53,21 +55,29 @@ export const MatchMaker = () => {
         candidatesArr.push(sleepNoiseMatch(user1, allUsers))
         candidatesArr.push(sleepPositionMatch(user1, allUsers))
         candidatesArr.push(tempMatch(user1, allUsers))
+        candidatesArr.push(snoreMatch(user1, allUsers))
 
         const candidates = [].concat(...candidatesArr)
         const count = {}
         const trueMatches = []
-        candidates.forEach(person => {
-            if (!count[person]) {
-                count[person] = 1;
-            } else {
-                count[person]++
-            }
-            if (count[person] >= 4 && genderMatches.includes(person) && !trueMatches.includes(person)) {
-                trueMatches.push(person)
-            }
+        const userCounts = new Map()
 
-        })
+        for (const person of candidates) {
+            if (!userCounts.has(person.id)) {
+                userCounts.set(person.id, 1)
+            } else {
+                userCounts.set(person.id, userCounts.get(person.id) + 1)
+            }
+            const hasFour = userCounts.get(person.id) >= 5
+            const isGenderMatched = genderMatches.some(obj => obj.id === person.id)
+            const dontExistYet = !trueMatches.some(obj => obj.id === person.id)
+            const notMe = person.id !== user1.id
+            if (hasFour && isGenderMatched && dontExistYet && notMe) {
+                trueMatches.push(person)
+                
+            }
+        }
+       
         setMatches(trueMatches)
     }
     //TRIGGER ALGORITHM 
@@ -93,26 +103,30 @@ export const MatchMaker = () => {
         const promiseArr = matches.map(
             (match => {
                 if (!existingMatches.find(existingMatch => existingMatch.userId === match.id && existingMatch.user1Id === user1.id)) {
-                return (fetch(`http://localhost:8088/matches`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        user1Id: user1.id,
-                        userId: match.id,
-                        active: true
-                    })
-                }))
-            }
+                    return (fetch(`http://localhost:8088/matches`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            user1Id: user1.id,
+                            userId: match.id,
+                            active: true
+                        })
+                    }))
+                }
             })
         )
         Promise.all(promiseArr)
-            .then()
-    }, [existingMatches])
-
-
-    const deleteMatch = (e,f) => {
+            .then(() => {
+                fetch(`http://localhost:8088/matches?_expand=user&user1Id=${sleeperUserObject.id}`)
+                    .then(res => res.json())
+                    .then(res => {
+                        setExisting(res)
+                    })
+            })
+    }, [matches])
+    const deleteMatch = (e, f) => {
         if (window.confirm('Are You sure you want to delete this match?')) {
             setIsDeletingMatch(true)
             return fetch(`http://localhost:8088/matches/${e}`, {
@@ -136,8 +150,10 @@ export const MatchMaker = () => {
         <div className="matcherBody">
 
             <div className="user1">
-                <h2>{user1.fullName}</h2>
+                <h2 className="userName">{user1.fullName}</h2>
+                <img className="userImage" src={user1.image} />
                 <ul className="u1PrefList">
+                    <li>{user1?.city}, {user1?.state}</li>
                     <li>{user1?.genderMatchPreference?.type}</li>
                     <li>{user1?.bedTime?.timeFrame}</li>
                     <li>{user1?.wakingTime?.range}</li>
@@ -146,27 +162,45 @@ export const MatchMaker = () => {
                     <li>{user1?.mattressType?.type}</li>
                     <li>{user1?.temperature?.range}</li>
                     <li>{user1?.sleepPosition?.type}</li>
-                    {/* <li>{user1?.image}</li> */}
+                    <li>{user1?.snore?.preference}</li>
+
+
                 </ul>
             </div>
             <div className="matches">
                 {existingMatches.map(
                     (match) => {
-                        if (match.active){
-                        return <div className="individuals" key={match?.user?.id}>{match?.user?.fullName} --
-                            <button
-                                onClick={(clickEvent) => deleteMatch(match.id, match.userId)}
-                                type="delete" className="deleteMatchButton"
+                        let foundPerson = matches.find(person => person.id === match.userId)
+                        if (match.active) {
+                            return <div className="individuals" key={match.id}><h2 className="matchName">{match?.user?.fullName} </h2>
+                                <img className="matchImage .hover-zoom" src={match?.user?.image} />
+                                <ul className="matchPrefList">
+                                <li>{foundPerson?.city}, {foundPerson?.state}</li>    
+                                <li>{foundPerson?.genderMatchPreference?.type}</li>
+                                <li>{foundPerson?.bedTime?.timeFrame}</li>
+                                <li>{foundPerson?.wakingTime?.range}</li>
+                                <li>{foundPerson?.sleepDepth?.type}</li>
+                                <li>{foundPerson?.sleepNoise?.type}</li>
+                                <li>{foundPerson?.mattressType?.type}</li>
+                                <li>{foundPerson?.temperature?.range}</li>
+                                <li>{foundPerson?.sleepPosition?.type}</li>
+                                <li>{foundPerson?.snore?.preference}</li>
+                                </ul>
+                                <button
+                                    onClick={(clickEvent) => deleteMatch(match.id, match.userId)}
+                                    type="delete" className="deleteMatchButton"
                                 > Delete Match
 
-                            </button>
-                        </div>}
+                                </button>
+
+                            </div>
+                        }
                     }
                 )}
             </div>
             <div></div>
         </div>
-        
+
     )
 
 

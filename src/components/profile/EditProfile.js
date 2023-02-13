@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import "./profile.css"
 
-
-export const EditProfile = () => {
+export const EditProfile = ({ profileState }) => {
     const [active, setActive] = useState(true)
     const [genderMatchPreferences, setGenderMatchPreferences] = useState([])
     const [sleepPositions, setSleepPositions] = useState([])
@@ -12,13 +12,13 @@ export const EditProfile = () => {
     const [temperatures, setTemperatures] = useState([])
     const [wakingTimes, setWakingTimes] = useState([])
     const [sleepNoises, setSleepNoises] = useState([])
+    const [snores, setSnores] = useState([])
     const [user, setUser] = useState([])
     const [error, setError] = useState([])
     const [isDeleting, setIsDeleting] = useState(false)
     const [profile, updateProfile] = useState({
         fullName: '',
         email: '',
-        accountActive: '',
         genderMatchPreferenceId: '',
         sleepPositionId: '',
         sleepDepthId: '',
@@ -27,17 +27,20 @@ export const EditProfile = () => {
         temperatureId: '',
         wakingTimeId: '',
         sleepNoiseId: '',
-        accountActive: true
+        snoreId: '',
+        accountActive: true,
+        image: ''
     })
     useEffect(() => {
         Promise.all([fetch('http://localhost:8088/users?accountActive'), fetch('http://localhost:8088/genderMatchPreferences'),
         fetch('http://localhost:8088/sleepPositions'), fetch('http://localhost:8088/sleepDepths'),
         fetch('http://localhost:8088/mattressTypes'), fetch('http://localhost:8088/bedTimes'),
         fetch('http://localhost:8088/temperatures'), fetch('http://localhost:8088/wakingTimes'),
-        fetch('http://localhost:8088/sleepNoises'), fetch(`http://localhost:8088/users?id=${sleeperUserObject.id}`)
+        fetch('http://localhost:8088/sleepNoises'), fetch(`http://localhost:8088/users?id=${sleeperUserObject.id}`),
+        fetch('http://localhost:8088/snores')
         ])
-            .then(([res1, res2, res3, res4, res5, res6, res7, res8, res9, res10]) => Promise.all([res1.json(), res2.json(), res3.json(), res4.json(), res5.json(), res6.json(), res7.json(), res8.json(), res9.json(), res10.json()]))
-            .then(([data1, data2, data3, data4, data5, data6, data7, data8, data9, data10]) => {
+            .then(([res1, res2, res3, res4, res5, res6, res7, res8, res9, res10, res11]) => Promise.all([res1.json(), res2.json(), res3.json(), res4.json(), res5.json(), res6.json(), res7.json(), res8.json(), res9.json(), res10.json(), res11.json()]))
+            .then(([data1, data2, data3, data4, data5, data6, data7, data8, data9, data10, data11]) => {
                 setActive(data1)
                 setGenderMatchPreferences(data2)
                 setSleepPositions(data3)
@@ -48,6 +51,7 @@ export const EditProfile = () => {
                 setWakingTimes(data8)
                 setSleepNoises(data9)
                 setUser(data10[0])
+                setSnores(data11)
             })
             .catch(error => {
                 setError(error)
@@ -77,7 +81,8 @@ export const EditProfile = () => {
             profile.sleepNoiseId && profile.genderMatchPreferenceId &&
             profile.sleepPositionId && profile.sleepDepthId &&
             profile.mattressTypeId && profile.temperatureId &&
-            profile.bedTimeId && profile.wakingTimeId 
+            profile.bedTimeId && profile.wakingTimeId &&
+            profile.snoreId && profile.state && profile.city
         ) {
             return fetch(`http://localhost:8088/users/${sleeperUserObject.id}`, {
                 method: "PUT",
@@ -115,10 +120,10 @@ export const EditProfile = () => {
     }
 
     return (
-        <main style={{ textAlign: "center" }}>
+        <main className="main" style={{ textAlign: "center" }}>
             <form className="form--login" onSubmit={handleEdit}>
                 <h2 className="h3 mb-3 font-weight-normal">Complete Entire Form to Edit Profile</h2>
-                <fieldset>
+                <fieldset className="fieldset">
                     <label htmlFor="fullName"> Full Name </label>
                     <input onChange={
                         (event) => {
@@ -130,7 +135,7 @@ export const EditProfile = () => {
                         type="text" value={profile.fullName} id="fullName" className="form-control"
                         placeholder={user.fullName} required autoFocus />
                 </fieldset>
-                <fieldset>
+                <fieldset className="fieldset">
                     <label htmlFor="email"> Email address </label>
                     <input onChange={
                         (event) => {
@@ -142,7 +147,7 @@ export const EditProfile = () => {
                         type="email" id="email" className="form-control"
                         placeholder={user.email} required />
                 </fieldset>
-                <fieldset>
+                <fieldset className="fieldset">
                     <div className="form-group">
                         <select className="dropDowns"
                             onChange={
@@ -164,7 +169,7 @@ export const EditProfile = () => {
                         </select>
                     </div>
                 </fieldset>
-                <fieldset>
+                <fieldset className="fieldset">
                     <div className="form-group">
                         <select className="dropDowns"
                             onChange={
@@ -187,7 +192,7 @@ export const EditProfile = () => {
                         </select>
                     </div>
                 </fieldset>
-                <fieldset>
+                <fieldset className="fieldset">
                     <div className="form-group">
                         <select className="dropDowns"
                             onChange={
@@ -209,7 +214,7 @@ export const EditProfile = () => {
                         </select>
                     </div>
                 </fieldset>
-                <fieldset>
+                <fieldset className="fieldset">
                     <div className="form-group">
                         <select className="dropDowns"
                             onChange={
@@ -231,7 +236,7 @@ export const EditProfile = () => {
                         </select>
                     </div>
                 </fieldset>
-                <fieldset>
+                <fieldset className="fieldset">
                     <div className="form-group">
                         <select className="dropDowns"
                             onChange={
@@ -253,7 +258,7 @@ export const EditProfile = () => {
                         </select>
                     </div>
                 </fieldset>
-                <fieldset>
+                <fieldset className="fieldset">
                     <div className="form-group">
                         <select className="dropDowns"
                             onChange={
@@ -275,7 +280,7 @@ export const EditProfile = () => {
                         </select>
                     </div>
                 </fieldset>
-                <fieldset>
+                <fieldset className="fieldset">
                     <div className="form-group">
                         <select className="dropDowns"
                             onChange={
@@ -297,7 +302,7 @@ export const EditProfile = () => {
                         </select>
                     </div>
                 </fieldset>
-                <fieldset>
+                <fieldset className="fieldset">
                     <div className="form-group">
                         <select className="dropDowns"
                             onChange={
@@ -319,7 +324,28 @@ export const EditProfile = () => {
                         </select>
                     </div>
                 </fieldset>
-
+                <fieldset className="fieldset">
+                    <div className="form-group">
+                        <select className="dropDowns"
+                            onChange={
+                                (event) => {
+                                    const copy = { ...profile }
+                                    copy.snoreId = parseInt(event.target.value)
+                                    updateProfile(copy)
+                                }
+                            }>
+                            <option value="0">Snoring Preference</option>
+                            {snores.map(
+                                (snore) => {
+                                    return <option
+                                        key={snore.id}
+                                        value={snore.id}>
+                                        {snore.preference}</option>
+                                }
+                            )}
+                        </select>
+                    </div>
+                </fieldset>
                 <button
                     onClick={(clickEvent) => handleEdit(clickEvent)}
                     type="submit" className="button"> Submit Changes

@@ -1,7 +1,10 @@
 import { Outlet, Route, Routes } from "react-router-dom"
 import { MatchMaker } from "../matchingSleepers/Matcher"
-import { EditProfile } from "../profile/EditProfile"
+import { EditContainer } from "../profile/Container2"
+import "./views.css"
 
+const localSleeperUser = localStorage.getItem("sleeper_user")
+    const sleeperUserObject = JSON.parse(localSleeperUser)
 
 
 export const SleeperViews = () => {
@@ -10,15 +13,16 @@ export const SleeperViews = () => {
             <Route path="/" element={
                 <>
                     <h1>Welcome Sleeper</h1>
-                    <div>If you want to know how someone is doing, ask them how they're sleeping.</div>
+                    
 
                     <Outlet />
                 </>
             }>
             
-            <Route path="profile" element={ <EditProfile />} />
+            <Route path="profile" element={ <EditContainer />} />
             <Route path="mymatches" element={ <MatchMaker />} />
-            {/* <Route path="mymatches" element={ <MatchMaker />} /> */}
+            
+           
                 
             </Route>
         </Routes>
