@@ -13,7 +13,7 @@ export const SleepTogether = () => {
 	return <Routes>
 		<Route path="/login" element={<Login />} />
 		<Route path="/register" element={<MatchContainer />} />
-
+		
 		<Route path="*" element={
 			<Authorized>
 				<>

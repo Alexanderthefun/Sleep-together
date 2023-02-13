@@ -1,14 +1,35 @@
 .navbar {
     display: flex;
     flex-wrap: nowrap;
-    justify-content: left;
+    justify-content: space-between;
+    border: 2px solid aliceblue;
+    border-radius: 20px;
+    padding: 3px;
+    
 }
 
 .navbar__item {
     flex-basis: 20%;
+    justify-content: space-between;
     list-style-type: none;
+    margin: 2px;
 }
 
 .navbar__logout {
     margin-left: auto;
+}
+
+a:link {
+    color: rgb(255, 208, 0);
+    
+    font-size: 18px;
+    font-weight: bold;
+}
+
+a:visited {
+    color:  rgb(255, 208, 0);
+}
+
+a:hover {
+    color: aliceblue;
 }

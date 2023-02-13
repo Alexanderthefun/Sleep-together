@@ -1,0 +1,21 @@
+.main {
+    padding: 1rem;
+    
+}
+
+.h3 {
+    border: 2px solid black;
+}
+
+.fieldset {
+    flex-wrap: wrap;
+    width: 470px;
+    
+}
+
+.form--login {
+    width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    backdrop-filter: blur(45px);
+}

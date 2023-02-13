@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import { citiesApi, statesApi } from "../data/dataAccess"
 
 //remember to serve both databases.
 //make a container for EditProfile and implement the same shit. 

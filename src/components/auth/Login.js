@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"
 import "./Login.css"
 
 export const Login = () => {
-    const [email, set] = useState("Adamngoodsleeper@gmail.com")
+    const [email, set] = useState("")
     const navigate = useNavigate()
 
     const handleLogin = (e) => {
@@ -17,7 +17,8 @@ export const Login = () => {
                     const user = foundUsers[0]
                     localStorage.setItem("sleeper_user", JSON.stringify({
                         id: user.id,
-                        staff: user.isStaff
+                        staff: user.isStaff,
+                        image: user.image
                         
                     }))
 
@@ -34,6 +35,7 @@ export const Login = () => {
             <section>
                 <form className="form--login" onSubmit={handleLogin}>
                     <h1>Sleep Together</h1>
+                    <div>If you want to know how someone is doing, ask them how they're sleeping.</div>
                     <h2>Please sign in</h2>
                     
                     <fieldset className="loginField">
