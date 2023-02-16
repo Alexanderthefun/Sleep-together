@@ -1,0 +1,74 @@
+.letterBody {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+.conversation {
+    border: 10px outset rgb(32, 97, 150);
+    text-align: center;
+    width: 800px;
+    height: 500px;
+    backdrop-filter: blur(50px);
+    align-items: center;
+    padding: 4px;
+}
+
+.messageImage {
+    display: flex;
+    height: 80px;
+    border-radius: 50%;
+    border: 2px solid burlywood;
+    margin-left: 8px;
+    margin-top: 10px;
+}
+
+.message {
+    display: flex;
+}
+
+.letterContent {
+    margin-top: 40px;
+    font-size: 18;
+    color: azure;
+}
+
+.typeSend {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.messageInput {
+    width: 400px;
+    margin: 4px;
+    text-align: center;
+    border: 2px solid ;
+    
+    border-radius: 20px;
+}
+
+.sendButton {
+    width: 100px;
+    background-color: black;
+    border: 2px solid ;
+    border-radius: 20px;
+}
+
+.sendButton:hover {
+    background-color: black;
+    color: rgb(255, 153, 0);
+}
+
+/* //fetch allUsers and user1.
+//fetch all letters.
+//create a text input field
+//make database chat section
+//create send button that will post letter content to database.
+//display input field at bottom of chat.
+//SG - make it scrollable. 
+//SG - small user pic next to message.  */
