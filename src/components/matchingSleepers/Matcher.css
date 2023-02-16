@@ -51,6 +51,7 @@
     background-color: black;
     border: 2px solid ;
     border-radius: 20px;
+    margin-bottom: 6px;
 }
 
 .deleteMatchButton:hover {

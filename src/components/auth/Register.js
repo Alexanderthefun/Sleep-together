@@ -98,7 +98,6 @@ export const Register = ({ profileState }) => {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(profile)
-                // body: data
             })
                 .then(res => res.json())
                 .then(createdUser => {

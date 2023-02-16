@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { BrowserRouter as Router, Switch, Route, Link, useParams } from "react-router-dom"
 import { useNavigate } from "react-router-dom"
 import { bedtimeMatch } from "./bedtime"
 import { genderMatch } from "./genders"
@@ -58,7 +59,6 @@ export const MatchMaker = () => {
         candidatesArr.push(snoreMatch(user1, allUsers))
 
         const candidates = [].concat(...candidatesArr)
-        const count = {}
         const trueMatches = []
         const userCounts = new Map()
 
@@ -68,7 +68,7 @@ export const MatchMaker = () => {
             } else {
                 userCounts.set(person.id, userCounts.get(person.id) + 1)
             }
-            const hasFour = userCounts.get(person.id) >= 5
+            const hasFour = userCounts.get(person.id) >= 4
             const isGenderMatched = genderMatches.some(obj => obj.id === person.id)
             const dontExistYet = !trueMatches.some(obj => obj.id === person.id)
             const notMe = person.id !== user1.id
@@ -185,7 +185,11 @@ export const MatchMaker = () => {
                                 <li>{foundPerson?.temperature?.range}</li>
                                 <li>{foundPerson?.sleepPosition?.type}</li>
                                 <li>{foundPerson?.snore?.preference}</li>
+                                
                                 </ul>
+                                <li key={foundPerson?.id}>
+                                    <Link className="chatButton" to={`/mymatches/${foundPerson?.id}`}>Chat</Link>
+                                </li>
                                 <button
                                     onClick={(clickEvent) => deleteMatch(match.id, match.userId)}
                                     type="delete" className="deleteMatchButton"
