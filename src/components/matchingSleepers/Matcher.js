@@ -74,10 +74,10 @@ export const MatchMaker = () => {
             const notMe = person.id !== user1.id
             if (hasFour && isGenderMatched && dontExistYet && notMe) {
                 trueMatches.push(person)
-                
+
             }
         }
-       
+
         setMatches(trueMatches)
     }
     //TRIGGER ALGORITHM 
@@ -154,15 +154,7 @@ export const MatchMaker = () => {
                 <img className="userImage" src={user1.image} />
                 <ul className="u1PrefList">
                     <li>{user1?.city}, {user1?.state}</li>
-                    <li>{user1?.genderMatchPreference?.type}</li>
-                    <li>{user1?.bedTime?.timeFrame}</li>
-                    <li>{user1?.wakingTime?.range}</li>
-                    <li>{user1?.sleepDepth?.type}</li>
-                    <li>{user1?.sleepNoise?.type}</li>
-                    <li>{user1?.mattressType?.type}</li>
-                    <li>{user1?.temperature?.range}</li>
-                    <li>{user1?.sleepPosition?.type}</li>
-                    <li>{user1?.snore?.preference}</li>
+
 
 
                 </ul>
@@ -175,28 +167,29 @@ export const MatchMaker = () => {
                             return <div className="individuals" key={match.id}><h2 className="matchName">{match?.user?.fullName} </h2>
                                 <img className="matchImage .hover-zoom" src={match?.user?.image} />
                                 <ul className="matchPrefList">
-                                <li>{foundPerson?.city}, {foundPerson?.state}</li>    
-                                <li>{foundPerson?.genderMatchPreference?.type}</li>
-                                <li>{foundPerson?.bedTime?.timeFrame}</li>
-                                <li>{foundPerson?.wakingTime?.range}</li>
-                                <li>{foundPerson?.sleepDepth?.type}</li>
-                                <li>{foundPerson?.sleepNoise?.type}</li>
-                                <li>{foundPerson?.mattressType?.type}</li>
-                                <li>{foundPerson?.temperature?.range}</li>
-                                <li>{foundPerson?.sleepPosition?.type}</li>
-                                <li>{foundPerson?.snore?.preference}</li>
-                                
+                                    <li className="green">Lives in {foundPerson?.city}, {foundPerson?.state}</li>
+                                    <li className="blue">{foundPerson?.genderMatchPreference?.type}</li>
+                                    <li className="green">Goes to bed at {foundPerson?.bedTime?.timeFrame}</li>
+                                    <li className="blue">Wakes up around {foundPerson?.wakingTime?.range}</li>
+                                    <li className="green">{foundPerson?.sleepDepth?.type}</li>
+                                    <li className="blue">Prefers {foundPerson?.sleepNoise?.type}</li>
+                                    <li className="green">Prefers a {foundPerson?.mattressType?.type} mattress</li>
+                                    <li className="blue">Prefers room temperature around {foundPerson?.temperature?.range}</li>
+                                    <li className="green">Sleeps on their {foundPerson?.sleepPosition?.type}</li>
+                                    <li className="blue">{foundPerson?.snore?.preference}</li>
+
                                 </ul>
-                                <li key={foundPerson?.id}>
-                                    <Link className="chatButton" to={`/mymatches/${foundPerson?.id}`}>Chat</Link>
-                                </li>
-                                <button
-                                    onClick={(clickEvent) => deleteMatch(match.id, match.userId)}
-                                    type="delete" className="deleteMatchButton"
-                                > Delete Match
+                                <div className="buttons">
+                                    <div key={foundPerson?.id} className="chatButton">
+                                        <Link id="chatButton" to={`/mymatches/${foundPerson?.id}`}>Chat</Link>
+                                    </div>
+                                    <button
+                                        onClick={(clickEvent) => deleteMatch(match.id, match.userId)}
+                                        type="delete" className="deleteMatchButton"
+                                    > Delete Match
 
-                                </button>
-
+                                    </button>
+                                </div>
                             </div>
                         }
                     }

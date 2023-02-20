@@ -4,18 +4,74 @@
 }
 
 .h3 {
-    border: 2px solid black;
+    border: 2px solid ;
+    border-radius: 20px;
+    text-align: center;
+    align-self: center;
+    width: 500px;
+    color: yellow;
+}
+
+.basicInfo {
+    border: 2px solid ;
+    border-radius: 20px;
+    text-align: center;
+    align-self: center;
+    width: 200px;
+}
+
+.sleepPrefs {
+    border: 2px solid ;
+    border-radius: 20px;
+    text-align: center;
+    align-self: center;
+    width: 200px;
 }
 
 .fieldset {
     flex-wrap: wrap;
-    width: 470px;
-    
-}
-
-.form--login {
-    width: 500px;
+    width: 400px;
+    border: 2px solid;
+    border-radius: 15px;
     margin-left: auto;
     margin-right: auto;
-    backdrop-filter: blur(45px);
+    margin-top: 4px;
 }
+
+.entireForm1 {
+    display: flex;
+    flex-direction: column;
+    width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    backdrop-filter: blur(45px);
+    border: 2px solid ;
+    border-radius: 30px;
+}
+
+.dropDowns {
+    width: 300px;
+    border-radius: 8px;
+    margin-top: 4px;
+}
+
+.button {
+    background-color: black;
+    border: 2px solid;
+    border-radius: 8px;
+    margin-left: 40px;
+    margin-right: 40px;
+    color: yellow;
+}
+.button:hover {
+    color: black;
+    background-color: green;
+}
+
+#deleteButton:hover {
+    color: black;
+    background-color: red;
+}
+

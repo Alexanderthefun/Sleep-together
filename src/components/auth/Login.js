@@ -31,15 +31,14 @@ export const Login = () => {
     }
 
     return (
-        <main className="container--login">
+        <main className="container--login" style={{ textAlign: "center" }}>
             <section>
-                <form className="form--login" onSubmit={handleLogin}>
+                <form id="form--login" onSubmit={handleLogin}>
                     <h1>Sleep Together</h1>
                     <div>If you want to know how someone is doing, ask them how they're sleeping.</div>
                     <h2>Please sign in</h2>
                     
                     <fieldset className="loginField">
-                        <label htmlFor="inputEmail"> Email address </label>
                         <input type="email"
                             value={email}
                             onChange={evt => set(evt.target.value)}

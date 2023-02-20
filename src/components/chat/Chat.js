@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useParams } from "react-router-dom"
 import "./chat.css"
 import moment from 'moment'
@@ -13,6 +13,7 @@ export const Chat = () => {
     const [sortedMessages, setSortedMessages] = useState([])
     const [filteredMessages1, setFilteredMessages1] = useState([])
     const [filteredMessages2, setFilteredMessages2] = useState([])
+    const messagesEndRef = useRef(null)
     const [letter, setLetter] = useState({
         letterContent: '',
         date: new Date().toISOString()
@@ -64,6 +65,11 @@ export const Chat = () => {
         const myMatchConvo = messages.filter(message => message.user1Id === user2.id && message.user2Id === user1.id)
         setFilteredMessages2(myMatchConvo)
     }, [messages, user1, user2])
+        
+    //Will cause messages to auto-scroll to the bottom of the convo.
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView()
+    }, [sortedMessages])
 
     //combine messages from both users. Maybe make the date filtering happen here? 
     useEffect(() => {
@@ -77,11 +83,9 @@ export const Chat = () => {
     //sorts the messages by date
     useEffect(() => {
         const convo = [...entireConvo]
-        console.log('before', convo)
         convo.sort((a, b) => {
             return moment(a.date).diff(b.date);
         });
-        console.log('after', convo)
         setSortedMessages(convo)
     }, [entireConvo])
 
@@ -103,16 +107,13 @@ export const Chat = () => {
                     messageToSendApi
                 )
             })
-                .then(() => {
-                    alert('Your message has been sent!')
-                })
         }
     }
-    console.log(sortedMessages)
+    
     //figure out how to display user1 & 2's name and/or picture next to message.
     return (<div className="letterBody">
 
-        <h2>Chat with {user2 ? user2?.fullName : 'Match'}</h2>
+        <h2 id="chatWith">Chat with {user2 ? user2?.fullName : 'Match'}</h2>
         <div className="conversation">
             {sortedMessages.map((message) => {
                 const isUser1Sender = message.user1Id === user1.id
@@ -120,12 +121,21 @@ export const Chat = () => {
                 if ((isUser1Sender && message.user2Id === user2.id) || (isUser2Sender && message.user2Id === user1.id)) {
                     const sender = isUser1Sender ? user1 : user2
                     const receiver = isUser1Sender ? user2 : user1
-                    return (
-                        <div key={message.id} className="message"><img src={sender.image} className="messageImage"></img> &nbsp; &nbsp; <h3 className="letterContent">&nbsp;{message.letterContent}</h3></div>
-                    )
+                    if (sender === user1){
+                        return (
+                            <div key={message.id} className="message"><img src={sender.image} className="user1MsgImage"></img> &nbsp; &nbsp; <h3 className="letterContent">&nbsp;{message.letterContent}</h3></div>
+                        )
+                    }
+                    else if (sender === user2) {
+                        return (
+                            <div key={message.id} className="message2"><img src={sender.image} className="user2MsgImage"></img> &nbsp; &nbsp; <h3 className="letterContent">&nbsp;{message.letterContent}</h3></div>
+                        )
+                    }
                 }
             })}
-        </div>
+            <div ref={messagesEndRef} />
+
+        </div> 
         <form>
             <div className="typeSend">
                 <input

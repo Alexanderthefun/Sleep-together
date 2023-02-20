@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-
 import "./Login.css"
 
 export const Register = ({ profileState }) => {
@@ -132,27 +131,10 @@ export const Register = ({ profileState }) => {
             })
     }
 
-    /* <fieldset>
-                    <div className="imgWrapper">
-                        <label htmlFor="img">Upload Image </label>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            name="img"
-                            className="imageInput"
-                            onChange={onFileChange}
-                        ></input>
-
-
-                    </div>
-                </fieldset> */
-
     return (
-        <main style={{ textAlign: "center" }}>
+        <main className="entireForm" style={{ textAlign: "center" }}>
             <form className="form--login" onSubmit={handleRegister}>
-                <h1 className="h3 mb-3 font-weight-normal">Please Register for Sleep Together</h1>
-                <fieldset>
-                    <label htmlFor="fullName"> Full Name </label>
+                <fieldset className="fieldset">
                     <input onChange={
                         (event) => {
                             const copy = { ...profile }
@@ -161,10 +143,9 @@ export const Register = ({ profileState }) => {
                         }
                     }
                         type="text" id="fullName" className="form-control"
-                        placeholder="Enter your name" required autoFocus />
+                        placeholder="Enter your full name" required autoFocus />
                 </fieldset>
-                <fieldset>
-                    <label htmlFor="email"> Email address </label>
+                <fieldset className="fieldset">
                     <input onChange={
                         (event) => {
                             const copy = { ...profile }
@@ -173,10 +154,10 @@ export const Register = ({ profileState }) => {
                         }
                     }
                         type="email" id="email" className="form-control"
-                        placeholder="Email address" required />
+                        placeholder="Enter your email address" required />
                 </fieldset>
                 
-                <fieldset>
+                <fieldset className="fieldset">
                     <div className="form-group">
                         <select className="dropDowns"
                             onChange={
@@ -198,7 +179,7 @@ export const Register = ({ profileState }) => {
                         </select>
                     </div>
                 </fieldset>
-                <fieldset>
+                <fieldset className="fieldset">
                     <div className="form-group">
                         <select className="dropDowns"
                             onChange={
@@ -221,7 +202,7 @@ export const Register = ({ profileState }) => {
                         </select>
                     </div>
                 </fieldset>
-                <fieldset>
+                <fieldset className="fieldset">
                     <div className="form-group">
                         <select className="dropDowns"
                             onChange={
@@ -243,7 +224,7 @@ export const Register = ({ profileState }) => {
                         </select>
                     </div>
                 </fieldset>
-                <fieldset>
+                <fieldset className="fieldset">
                     <div className="form-group">
                         <select className="dropDowns"
                             onChange={
@@ -265,7 +246,7 @@ export const Register = ({ profileState }) => {
                         </select>
                     </div>
                 </fieldset>
-                <fieldset>
+                <fieldset className="fieldset">
                     <div className="form-group">
                         <select className="dropDowns"
                             onChange={
@@ -287,7 +268,7 @@ export const Register = ({ profileState }) => {
                         </select>
                     </div>
                 </fieldset>
-                <fieldset>
+                <fieldset className="fieldset">
                     <div className="form-group">
                         <select className="dropDowns"
                             onChange={
@@ -309,7 +290,7 @@ export const Register = ({ profileState }) => {
                         </select>
                     </div>
                 </fieldset>
-                <fieldset>
+                <fieldset className="fieldset">
                     <div className="form-group">
                         <select className="dropDowns"
                             onChange={
@@ -331,7 +312,7 @@ export const Register = ({ profileState }) => {
                         </select>
                     </div>
                 </fieldset>
-                <fieldset>
+                <fieldset className="fieldset">
                     <div className="form-group">
                         <select className="dropDowns"
                             onChange={
@@ -353,7 +334,7 @@ export const Register = ({ profileState }) => {
                         </select>
                     </div>
                 </fieldset>
-                <fieldset>
+                <fieldset className="fieldset">
                     <div className="form-group">
                         <select className="dropDowns"
                             onChange={
