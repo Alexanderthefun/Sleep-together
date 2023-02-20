@@ -13,12 +13,11 @@ export const EditProfile = ({ profileState }) => {
     const [wakingTimes, setWakingTimes] = useState([])
     const [sleepNoises, setSleepNoises] = useState([])
     const [snores, setSnores] = useState([])
+    const [image, setImage] = useState([])
     const [user, setUser] = useState([])
     const [error, setError] = useState([])
     const [isDeleting, setIsDeleting] = useState(false)
-    const [profile, updateProfile] = useState({
-        fullName: '',
-        email: '',
+    const [selectedPref, setSelectedPref] = useState({
         genderMatchPreferenceId: '',
         sleepPositionId: '',
         sleepDepthId: '',
@@ -28,8 +27,25 @@ export const EditProfile = ({ profileState }) => {
         wakingTimeId: '',
         sleepNoiseId: '',
         snoreId: '',
+        image: image,
         accountActive: true,
-        image: ''
+    })
+    const [profile, updateProfile] = useState({
+        fullName: '',
+        email: '',
+        state: '',
+        city: '',
+        genderMatchPreferenceId: '',
+        sleepPositionId: '',
+        sleepDepthId: '',
+        mattressTypeId: '',
+        bedTimeId: '',
+        temperatureId: '',
+        wakingTimeId: '',
+        sleepNoiseId: '',
+        snoreId: '',
+        image: image,
+        accountActive: true
     })
     useEffect(() => {
         Promise.all([fetch('http://localhost:8088/users?accountActive'), fetch('http://localhost:8088/genderMatchPreferences'),
@@ -53,6 +69,9 @@ export const EditProfile = ({ profileState }) => {
                 setUser(data10[0])
                 setSnores(data11)
             })
+            .then(() => {
+                setImage(user.image)
+            })
             .catch(error => {
                 setError(error)
             })
@@ -75,15 +94,58 @@ export const EditProfile = ({ profileState }) => {
 
     let navigate = useNavigate()
 
+    useEffect(() => {
+        const copy = {...profile}
+        copy.genderMatchPreferenceId = selectedPref.genderMatchPreferenceId
+        copy.sleepPositionId = selectedPref.sleepPositionId
+        copy.sleepDepthId = selectedPref.sleepDepthId
+        copy.mattressTypeId = selectedPref.mattressTypeId
+        copy.bedTimeId = selectedPref.bedTimeId
+        copy.temperatureId = selectedPref.temperatureId
+        copy.wakingTimeId = selectedPref.wakingTimeId
+        copy.sleepNoiseId = selectedPref.sleepNoiseId
+        copy.snoreId = selectedPref.snoreId
+        copy.image = selectedPref.image
+        copy.accountActive = selectedPref.accountActive
+        updateProfile(copy)
+    }, [selectedPref])
+
+    useEffect(
+        () => {
+            profile.fullName = profileState.fullName
+            profile.email = profileState.email
+            profile.state = profileState.state
+            profile.city = profileState.city
+        },
+        [profileState]
+    )
+
+    useEffect(() => {
+        if (user)
+        setSelectedPref({
+            genderMatchPreferenceId: user.genderMatchPreferenceId,
+            sleepPositionId: user.sleepPositionId,
+            sleepDepthId: user.sleepDepthId,
+            mattressTypeId: user.mattressTypeId,
+            bedTimeId: user.bedTimeId,
+            temperatureId: user.temperatureId,
+            wakingTimeId: user.wakingTimeId,
+            sleepNoiseId: user.sleepNoiseId,
+            snoreId: user.snoreId,
+            image: user.image,
+            accountActive: true,
+        })
+    }, [user])
+
     const finishEdit = () => {
-        if (
-            profile.fullName && profile.email &&
-            profile.sleepNoiseId && profile.genderMatchPreferenceId &&
-            profile.sleepPositionId && profile.sleepDepthId &&
-            profile.mattressTypeId && profile.temperatureId &&
-            profile.bedTimeId && profile.wakingTimeId &&
-            profile.snoreId && profile.state && profile.city
-        ) {
+        // if (
+        //     profile.sleepNoiseId && profile.genderMatchPreferenceId &&
+        //     profile.sleepPositionId && profile.sleepDepthId &&
+        //     profile.mattressTypeId && profile.temperatureId &&
+        //     profile.bedTimeId && profile.wakingTimeId &&
+        //     profile.snoreId
+        //     // profile.state && profile.city
+        // ) {
             return fetch(`http://localhost:8088/users/${sleeperUserObject.id}`, {
                 method: "PUT",
                 headers: {
@@ -94,10 +156,10 @@ export const EditProfile = ({ profileState }) => {
                 .then(res => res.json())
                 .then(navigate("/"))
         }
-        else {
-            window.alert("You must fill out the entire form in order to complete edit.")
-        }
-    }
+        // else {
+        //     window.alert("You must fill out the entire form in order to complete edit.")
+        // }
+    // }
 
     const handleEdit = (e) => {
         e.preventDefault()
@@ -109,7 +171,7 @@ export const EditProfile = ({ profileState }) => {
     }
 
     const deleteAccount = (e) => {
-        if (window.confirm('Are You sure you want to delete your account?')){
+        if (window.confirm('Are You sure you want to delete your account?')) {
             setIsDeleting(true)
             return fetch(`http://localhost:8088/users/${sleeperUserObject.id}`, {
                 method: "DELETE",
@@ -122,39 +184,15 @@ export const EditProfile = ({ profileState }) => {
     return (
         <main className="main" style={{ textAlign: "center" }}>
             <form className="form--login" onSubmit={handleEdit}>
-                <h2 className="h3 mb-3 font-weight-normal">Complete Entire Form to Edit Profile</h2>
-                <fieldset className="fieldset">
-                    <label htmlFor="fullName"> Full Name </label>
-                    <input onChange={
-                        (event) => {
-                            const copy = { ...profile }
-                            copy.fullName = event.target.value
-                            updateProfile(copy)
-                        }
-                    }
-                        type="text" value={profile.fullName} id="fullName" className="form-control"
-                        placeholder={user.fullName} required autoFocus />
-                </fieldset>
-                <fieldset className="fieldset">
-                    <label htmlFor="email"> Email address </label>
-                    <input onChange={
-                        (event) => {
-                            const copy = { ...profile }
-                            copy.email = event.target.value
-                            updateProfile(copy)
-                        }
-                    }
-                        type="email" id="email" className="form-control"
-                        placeholder={user.email} required />
-                </fieldset>
                 <fieldset className="fieldset">
                     <div className="form-group">
                         <select className="dropDowns"
+                            value={selectedPref.genderMatchPreferenceId || ""} 
                             onChange={
                                 (event) => {
-                                    const copy = { ...profile }
+                                    const copy = { ...selectedPref }
                                     copy.genderMatchPreferenceId = parseInt(event.target.value)
-                                    updateProfile(copy)
+                                    setSelectedPref(copy)
                                 }
                             }>
                             <option value="0">Gender Match Preference</option>
@@ -172,11 +210,12 @@ export const EditProfile = ({ profileState }) => {
                 <fieldset className="fieldset">
                     <div className="form-group">
                         <select className="dropDowns"
+                            value={selectedPref.sleepPositionId || ""}
                             onChange={
                                 (event) => {
-                                    const copy = { ...profile }
+                                    const copy = { ...selectedPref }
                                     copy.sleepPositionId = parseInt(event.target.value)
-                                    updateProfile(copy)
+                                    setSelectedPref(copy)
                                 }
                             }>
                             <option value="0">Sleep Position</option>
@@ -195,11 +234,12 @@ export const EditProfile = ({ profileState }) => {
                 <fieldset className="fieldset">
                     <div className="form-group">
                         <select className="dropDowns"
+                        value={selectedPref.sleepDepthId || ""}
                             onChange={
                                 (event) => {
-                                    const copy = { ...profile }
+                                    const copy = { ...selectedPref }
                                     copy.sleepDepthId = parseInt(event.target.value)
-                                    updateProfile(copy)
+                                    setSelectedPref(copy)
                                 }
                             }>
                             <option value="0">Sleep Depth</option>
@@ -217,11 +257,12 @@ export const EditProfile = ({ profileState }) => {
                 <fieldset className="fieldset">
                     <div className="form-group">
                         <select className="dropDowns"
+                        value={selectedPref.mattressTypeId || ""}
                             onChange={
                                 (event) => {
-                                    const copy = { ...profile }
+                                    const copy = { ...selectedPref }
                                     copy.mattressTypeId = parseInt(event.target.value)
-                                    updateProfile(copy)
+                                    setSelectedPref(copy)
                                 }
                             }>
                             <option value="0">Mattress Type</option>
@@ -239,11 +280,12 @@ export const EditProfile = ({ profileState }) => {
                 <fieldset className="fieldset">
                     <div className="form-group">
                         <select className="dropDowns"
+                        value={selectedPref.bedTimeId || ""}
                             onChange={
                                 (event) => {
-                                    const copy = { ...profile }
+                                    const copy = { ...selectedPref }
                                     copy.bedTimeId = parseInt(event.target.value)
-                                    updateProfile(copy)
+                                    setSelectedPref(copy)
                                 }
                             }>
                             <option value="0">Bedtime</option>
@@ -261,11 +303,12 @@ export const EditProfile = ({ profileState }) => {
                 <fieldset className="fieldset">
                     <div className="form-group">
                         <select className="dropDowns"
+                        value={selectedPref.wakingTimeId || ""}
                             onChange={
                                 (event) => {
-                                    const copy = { ...profile }
+                                    const copy = { ...selectedPref }
                                     copy.wakingTimeId = parseInt(event.target.value)
-                                    updateProfile(copy)
+                                    setSelectedPref(copy)
                                 }
                             }>
                             <option value="0">Waking Time</option>
@@ -283,11 +326,12 @@ export const EditProfile = ({ profileState }) => {
                 <fieldset className="fieldset">
                     <div className="form-group">
                         <select className="dropDowns"
+                        value={selectedPref.temperatureId || ""}
                             onChange={
                                 (event) => {
-                                    const copy = { ...profile }
+                                    const copy = { ...selectedPref }
                                     copy.temperatureId = parseInt(event.target.value)
-                                    updateProfile(copy)
+                                    setSelectedPref(copy)
                                 }
                             }>
                             <option value="0">Temperature</option>
@@ -305,11 +349,12 @@ export const EditProfile = ({ profileState }) => {
                 <fieldset className="fieldset">
                     <div className="form-group">
                         <select className="dropDowns"
+                        value={selectedPref.sleepNoiseId || ""}
                             onChange={
                                 (event) => {
-                                    const copy = { ...profile }
+                                    const copy = { ...selectedPref }
                                     copy.sleepNoiseId = parseInt(event.target.value)
-                                    updateProfile(copy)
+                                    setSelectedPref(copy)
                                 }
                             }>
                             <option value="0">Sleep Noise</option>
@@ -327,11 +372,12 @@ export const EditProfile = ({ profileState }) => {
                 <fieldset className="fieldset">
                     <div className="form-group">
                         <select className="dropDowns"
+                        value={selectedPref.snoreId || ""}
                             onChange={
                                 (event) => {
-                                    const copy = { ...profile }
+                                    const copy = { ...selectedPref }
                                     copy.snoreId = parseInt(event.target.value)
-                                    updateProfile(copy)
+                                    setSelectedPref(copy)
                                 }
                             }>
                             <option value="0">Snoring Preference</option>
@@ -346,13 +392,26 @@ export const EditProfile = ({ profileState }) => {
                         </select>
                     </div>
                 </fieldset>
+                <fieldset className="fieldset">
+                    <input
+                        value={selectedPref.image || ""}
+                        onChange={
+                            (event) => {
+                                const copy = { ...selectedPref }
+                                copy.image = event.target.value
+                                setSelectedPref(copy)
+                            }
+                        }
+                        type="text" id="image" className="dropDowns"
+                        required />
+                </fieldset>
                 <button
                     onClick={(clickEvent) => handleEdit(clickEvent)}
                     type="submit" className="button"> Submit Changes
                 </button>
                 <button
                     onClick={(clickEvent) => deleteAccount(clickEvent)}
-                    type="delete" id="deleteButton"> Delete Account
+                    type="delete" className="button" id="deleteButton"> Delete Account
 
                 </button>
 

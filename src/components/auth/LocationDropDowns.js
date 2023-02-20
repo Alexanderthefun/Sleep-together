@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import "./Login.css"
 
 //remember to serve both databases.
 //make a container for EditProfile and implement the same shit. 
@@ -52,9 +53,9 @@ export const Locations = ({ setterFunction }) => {
 
     return (
         <div className="locationDropdowns">
-          <fieldset>
-            <label htmlFor="Select State">Select State  </label>
+          <fieldset className="fieldset">
           <select
+          className="dropDowns"
             value={selectedState}
             onChange={
                 (event) => {
@@ -62,17 +63,17 @@ export const Locations = ({ setterFunction }) => {
                 }
             }
           >
-            <option value="">Select State</option>
+            <option className="dropDowns" value="">Select State</option>
             {states.map((state) => (
-              <option key={state.name} value={state.stateCode}>
+              <option className="dropDowns" key={state.name} value={state.stateCode}>
                 {state.name}
               </option>
             ))}
           </select>
           </fieldset>
-          <fieldset>
-          <label htmlFor="Select City">Select City  </label>
+          <fieldset className="fieldset">
           <select 
+          className="dropDowns"
           value={selectedCity}
           onChange={
             (event) => {
@@ -80,9 +81,9 @@ export const Locations = ({ setterFunction }) => {
             }
         }
           >
-            <option value="">Select City</option>
+            <option className="dropDowns" value="">Select City</option>
             {cities.map((city) => (
-              <option key={city.name} value={city.name}>
+              <option className="dropDowns" key={city.name} value={city.name}>
                 {city.name}
               </option>
             ))}
